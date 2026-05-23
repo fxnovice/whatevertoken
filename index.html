@@ -1,790 +1,1049 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>$WHATEVER | Solana Memecoin for Real-World Impact 🐾</title>
-  <meta name="description" content="$WHATEVER is a community-driven Solana movement turning memecoins into real-world dog shelter donations. Every trade fuels charity. Join the pack!">
-  <meta name="keywords" content="Solana, memecoin, charity, dog shelters, crypto donation, $WHATEVER, token, blockchain for good">
-  <meta name="author" content="$WHATEVER Community">
-  <meta property="og:title" content="$WHATEVER – Memes to Meaning, Crypto for Canines">
-  <meta property="og:description" content="90% of Creator Rewards go to verified dog shelters. Real impact. Transparent. Community-led.">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  
-  <!-- Google Fonts: Orbitron + Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome 6 (free icons) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$WHATEVER — Memecoins With Real Impact | Solana</title>
+  <meta name="description" content="$WHATEVER is a Solana movement turning trading volume into real-world impact. 90% of creator rewards go to verified dog shelters. Join the pack." />
+  <meta name="keywords" content="WHATEVER token, Solana memecoin, dog shelter crypto, charity crypto, pump.fun, $WHATEVER, web3 charity" />
+  <meta property="og:title" content="$WHATEVER — Memecoins With Real Impact" />
+  <meta property="og:description" content="A Solana movement built to prove memecoins can create real-world impact. 90% to dog shelters." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@tokenwhatever" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue:    #39C6FF;
+      --purple:  #B14DFF;
+      --navy:    #070B17;
+      --mid:     #0E1630;
+      --dark:    #140B2D;
+      --cyan:    #6FEFFF;
+      --violet:  #D58BFF;
+      --white:   #F5F7FF;
+      --gold:    #FFD76A;
+      --glow-b:  rgba(57,198,255,0.35);
+      --glow-p:  rgba(177,77,255,0.35);
+      --font-h:  'Orbitron', sans-serif;
+      --font-b:  'Inter', sans-serif;
     }
-
+    html { scroll-behavior: smooth; }
     body {
-      background: linear-gradient(135deg, #070B17 0%, #0E1630 50%, #140B2D 100%);
-      color: #F5F7FF;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-b);
+      background: linear-gradient(135deg, var(--navy) 0%, var(--mid) 50%, var(--dark) 100%);
+      background-attachment: fixed;
+      color: var(--white);
+      min-height: 100vh;
       overflow-x: hidden;
-      scroll-behavior: smooth;
     }
 
-    /* custom scroll */
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0E1630;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #39C6FF;
-      border-radius: 8px;
-    }
+    /* ── PARTICLES CANVAS ── */
+    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-    h1, h2, h3, .logo-text, .nav-links a, .roadmap-phase h3, .btn, .stat-text {
-      font-family: 'Orbitron', monospace;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
 
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(135deg, #39C6FF, #B14DFF);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: inline-block;
-      border-left: 4px solid #39C6FF;
-      padding-left: 1rem;
-    }
-
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* ===== NAVBAR ===== */
+    /* ── NAVBAR ── */
     nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      flex-wrap: wrap;
-      background: rgba(7, 11, 23, 0.75);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(57,198,255,0.2);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 2rem;
+      background: rgba(7,11,23,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(57,198,255,0.15);
     }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-family: var(--font-h); font-size: 1.1rem; font-weight: 700;
+      color: var(--blue); text-decoration: none;
+      letter-spacing: 0.05em;
     }
-
-    .logo-frame {
-      width: 54px;
-      height: 54px;
-      background: radial-gradient(circle, rgba(57,198,255,0.2), rgba(177,77,255,0.1));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 12px rgba(57,198,255,0.5);
-      transition: all 0.2s;
-    }
-
-    .logo-frame img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
+    .nav-logo-img {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid var(--blue);
+      box-shadow: 0 0 10px var(--glow-b);
       object-fit: cover;
-      display: block;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 1.5rem; list-style: none;
+    }
+    .nav-links a {
+      color: var(--white); text-decoration: none; font-size: 0.82rem;
+      font-weight: 500; letter-spacing: 0.04em; transition: color 0.2s;
+      text-transform: uppercase;
+    }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-buy {
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      color: #000 !important; font-weight: 700 !important;
+      padding: 0.45rem 1.1rem; border-radius: 50px;
+      font-family: var(--font-h) !important; font-size: 0.75rem !important;
+      box-shadow: 0 0 16px var(--glow-b);
+      transition: box-shadow 0.3s, transform 0.2s !important;
+    }
+    .nav-buy:hover { box-shadow: 0 0 28px var(--glow-b), 0 0 28px var(--glow-p); transform: scale(1.05); }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--blue); transition: 0.3s; }
+    .mobile-menu {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(7,11,23,0.97); z-index: 999; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-h); font-size: 1.1rem; color: var(--white);
+      text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--blue); }
+    .mobile-close {
+      position: absolute; top: 1.2rem; right: 1.5rem;
+      background: none; border: none; color: var(--white); font-size: 2rem; cursor: pointer;
+    }
+
+    /* ── BANNER ── */
+    .banner-wrap { margin-top: 62px; width: 100%; overflow: hidden; }
+    .banner-wrap img { width: 100%; display: block; max-height: 340px; object-fit: cover; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 5rem 1.5rem 4rem;
+      min-height: 85vh;
+    }
+    .logo-frame {
+      width: 150px; height: 150px; border-radius: 50%;
+      border: 3px solid var(--blue);
+      box-shadow: 0 0 30px var(--glow-b), 0 0 60px var(--glow-p), inset 0 0 20px rgba(57,198,255,0.1);
+      overflow: hidden; margin-bottom: 2rem;
+      animation: pulse-logo 3s ease-in-out infinite;
+      background: rgba(14,22,48,0.6);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    @keyframes pulse-logo {
+      0%, 100% { box-shadow: 0 0 30px var(--glow-b), 0 0 60px var(--glow-p); transform: scale(1); }
+      50% { box-shadow: 0 0 50px var(--glow-b), 0 0 90px var(--glow-p); transform: scale(1.04); }
+    }
+    .hero-eyebrow {
+      font-family: var(--font-h); font-size: 0.7rem; letter-spacing: 0.3em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 0.8rem;
+      animation: fadeInUp 0.8s ease both;
+    }
+    .hero-title {
+      font-family: var(--font-h); font-size: clamp(2.4rem, 7vw, 5rem);
+      font-weight: 900; line-height: 1.05; letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--violet) 50%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 1.2rem;
+      animation: fadeInUp 0.9s ease 0.1s both;
+    }
+    .hero-sub {
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem); color: rgba(245,247,255,0.75);
+      max-width: 540px; line-height: 1.7; margin-bottom: 2.4rem;
+      animation: fadeInUp 0.9s ease 0.2s both;
+    }
+    .hero-sub strong { color: var(--blue); }
+    .hero-buttons {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeInUp 0.9s ease 0.3s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      color: #000; font-family: var(--font-h); font-weight: 700;
+      font-size: 0.85rem; padding: 0.85rem 2rem; border-radius: 50px;
+      text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase;
+      box-shadow: 0 0 20px var(--glow-b), 0 0 20px var(--glow-p);
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover { box-shadow: 0 0 40px var(--glow-b), 0 0 40px var(--glow-p); transform: scale(1.05); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--purple); font-family: var(--font-h);
+      font-weight: 700; font-size: 0.85rem; padding: 0.85rem 2rem; border-radius: 50px;
+      text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase;
+      border: 2px solid var(--purple);
+      box-shadow: 0 0 14px var(--glow-p);
+      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(177,77,255,0.15); box-shadow: 0 0 30px var(--glow-p); transform: scale(1.05);
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section { position: relative; z-index: 1; padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; font-family: var(--font-h); font-size: 0.65rem;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--blue);
+      border: 1px solid rgba(57,198,255,0.3); border-radius: 50px;
+      padding: 0.3rem 1rem; margin-bottom: 1rem;
+      background: rgba(57,198,255,0.06);
+    }
+    .section-title {
+      font-family: var(--font-h); font-size: clamp(1.5rem, 4vw, 2.4rem);
+      font-weight: 900; letter-spacing: 0.04em; line-height: 1.15;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+    .section-divider {
+      width: 60px; height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── GLASS CARD ── */
+    .glass-card {
+      background: rgba(14,22,48,0.55);
+      border: 1px solid rgba(57,198,255,0.15);
+      border-radius: 20px; padding: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 25px rgba(57,198,255,0.08), 0 8px 32px rgba(0,0,0,0.4);
+      transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .glass-card:hover {
+      box-shadow: 0 0 40px var(--glow-b), 0 0 20px var(--glow-p);
+      border-color: rgba(57,198,255,0.4); transform: translateY(-4px);
+    }
+
+    /* ── ABOUT SECTION ── */
+    #about { border-top: 1px solid rgba(57,198,255,0.08); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
+    }
+    .about-text p { color: rgba(245,247,255,0.78); line-height: 1.8; margin-bottom: 1rem; font-size: 0.95rem; }
+    .about-text strong { color: var(--blue); }
+    .about-highlights { display: flex; flex-direction: column; gap: 1rem; }
+    .highlight-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: rgba(14,22,48,0.55); border: 1px solid rgba(57,198,255,0.12);
+      border-radius: 14px; padding: 1.2rem; backdrop-filter: blur(8px);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .highlight-item:hover { border-color: rgba(177,77,255,0.4); box-shadow: 0 0 20px var(--glow-p); }
+    .highlight-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .highlight-label { font-family: var(--font-h); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--cyan); margin-bottom: 0.25rem; }
+    .highlight-desc { font-size: 0.88rem; color: rgba(245,247,255,0.75); line-height: 1.5; }
+
+    /* ── NOT SECTION ── */
+    .not-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 2rem; }
+    .not-item {
+      background: rgba(14,22,48,0.55); border: 1px solid rgba(255,77,77,0.15);
+      border-radius: 14px; padding: 1.2rem; text-align: center;
+      backdrop-filter: blur(8px); transition: box-shadow 0.3s;
+    }
+    .not-item:hover { box-shadow: 0 0 20px rgba(255,77,77,0.2); }
+    .not-item .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .not-item p { font-size: 0.85rem; color: rgba(245,247,255,0.75); }
+
+    /* ── ROADMAP ── */
+    #roadmap { background: rgba(7,11,23,0.4); }
+    .roadmap-subtitle {
+      font-family: var(--font-h); font-size: 0.75rem; letter-spacing: 0.2em;
+      color: var(--violet); text-transform: uppercase; margin-bottom: 2rem;
+    }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .phase-card {
+      background: rgba(14,22,48,0.55); border: 1px solid rgba(57,198,255,0.12);
+      border-radius: 20px; padding: 2rem; backdrop-filter: blur(12px);
+      position: relative; overflow: hidden;
+      transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .phase-card::before {
+      content: ''; position: absolute; inset: 0; opacity: 0;
+      background: radial-gradient(circle at top left, var(--glow-b), transparent 60%);
+      transition: opacity 0.4s;
+    }
+    .phase-card:hover::before { opacity: 1; }
+    .phase-card:hover {
+      box-shadow: 0 0 35px var(--glow-b); border-color: rgba(57,198,255,0.4);
+      transform: translateY(-5px);
+    }
+    .phase-number {
+      font-family: var(--font-h); font-size: 0.65rem; letter-spacing: 0.25em;
+      color: var(--blue); text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .phase-title {
+      font-family: var(--font-h); font-size: 1rem; font-weight: 700;
+      color: var(--white); margin-bottom: 1.2rem; letter-spacing: 0.05em;
+    }
+    .phase-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+    .phase-list li { font-size: 0.86rem; color: rgba(245,247,255,0.75); display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+    .phase-list li::before { content: '▸'; color: var(--blue); flex-shrink: 0; margin-top: 0.05rem; }
+    .roadmap-footer {
+      text-align: center; margin-top: 2.5rem;
+      font-family: var(--font-h); font-size: 0.68rem; letter-spacing: 0.18em;
+      color: rgba(245,247,255,0.45); text-transform: uppercase;
+    }
+    .roadmap-footer span { color: var(--blue); margin: 0 0.5rem; }
+
+    /* ── TOKENOMICS ── */
+    #tokenomics { border-top: 1px solid rgba(57,198,255,0.08); }
+    .tokenomics-intro {
+      color: rgba(245,247,255,0.75); font-size: 0.95rem; line-height: 1.8;
+      max-width: 680px; margin-bottom: 2.5rem;
+    }
+    .tokenomics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .token-card {
+      border-radius: 20px; padding: 2rem; position: relative; overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .token-card:hover { transform: translateY(-5px); }
+    .token-card.charity {
+      background: rgba(57,198,255,0.07); border: 1px solid rgba(57,198,255,0.25);
+      box-shadow: 0 0 30px rgba(57,198,255,0.12);
+    }
+    .token-card.charity:hover { box-shadow: 0 0 50px var(--glow-b); }
+    .token-card.growth {
+      background: rgba(177,77,255,0.07); border: 1px solid rgba(177,77,255,0.25);
+      box-shadow: 0 0 30px rgba(177,77,255,0.12);
+    }
+    .token-card.growth:hover { box-shadow: 0 0 50px var(--glow-p); }
+    .token-percent {
+      font-family: var(--font-h); font-size: 3.5rem; font-weight: 900; line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .token-card.charity .token-percent { color: var(--blue); }
+    .token-card.growth .token-percent { color: var(--purple); }
+    .token-label {
+      font-family: var(--font-h); font-size: 0.75rem; letter-spacing: 0.15em;
+      text-transform: uppercase; margin-bottom: 1.2rem;
+    }
+    .token-card.charity .token-label { color: var(--cyan); }
+    .token-card.growth .token-label { color: var(--violet); }
+    .token-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .token-list li { font-size: 0.87rem; color: rgba(245,247,255,0.78); display: flex; align-items: center; gap: 0.6rem; }
+    .token-list li::before { content: '●'; font-size: 0.5rem; flex-shrink: 0; }
+    .token-card.charity .token-list li::before { color: var(--blue); }
+    .token-card.growth .token-list li::before { color: var(--purple); }
+    .token-note {
+      margin-top: 2.5rem; background: rgba(255,215,106,0.06);
+      border: 1px solid rgba(255,215,106,0.2); border-radius: 14px; padding: 1.5rem;
+    }
+    .token-note-title {
+      font-family: var(--font-h); font-size: 0.75rem; letter-spacing: 0.15em;
+      color: var(--gold); text-transform: uppercase; margin-bottom: 0.8rem;
+    }
+    .token-note p { font-size: 0.88rem; color: rgba(245,247,255,0.75); line-height: 1.7; }
+    .token-note strong { color: var(--gold); }
+
+    /* ── CA SECTION ── */
+    #contract { background: rgba(7,11,23,0.4); border-top: 1px solid rgba(57,198,255,0.08); }
+    .ca-box {
+      background: rgba(14,22,48,0.7); border: 1px solid rgba(57,198,255,0.2);
+      border-radius: 20px; padding: 2.5rem; text-align: center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 30px rgba(57,198,255,0.1);
+    }
+    .ca-label { font-family: var(--font-h); font-size: 0.65rem; letter-spacing: 0.3em; color: var(--cyan); text-transform: uppercase; margin-bottom: 1rem; }
+    .ca-address-wrap {
+      display: flex; align-items: center; gap: 0.8rem;
+      background: rgba(57,198,255,0.05); border: 1px solid rgba(57,198,255,0.15);
+      border-radius: 12px; padding: 0.9rem 1.2rem; justify-content: space-between;
+      flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .ca-address {
+      font-family: var(--font-h); font-size: clamp(0.55rem, 2vw, 0.78rem);
+      color: var(--blue); letter-spacing: 0.04em; word-break: break-all; text-align: left;
+    }
+    .copy-btn {
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      color: #000; font-family: var(--font-h); font-weight: 700; font-size: 0.72rem;
+      letter-spacing: 0.08em; border: none; border-radius: 8px; padding: 0.55rem 1.1rem;
+      cursor: pointer; white-space: nowrap; transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .copy-btn:hover { box-shadow: 0 0 20px var(--glow-b); transform: scale(1.05); }
+    .copy-btn.copied { background: linear-gradient(90deg, #00e676, #1de9b6); }
+    .ca-note { font-size: 0.82rem; color: rgba(245,247,255,0.5); margin-top: 0.8rem; }
+    .ca-buy-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-top: 1.5rem;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      color: #000; font-family: var(--font-h); font-weight: 700;
+      font-size: 0.85rem; padding: 0.9rem 2.2rem; border-radius: 50px;
+      text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase;
+      box-shadow: 0 0 20px var(--glow-b), 0 0 20px var(--glow-p);
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .ca-buy-link:hover { box-shadow: 0 0 40px var(--glow-b), 0 0 40px var(--glow-p); transform: scale(1.05); }
+
+    /* ── SOCIAL SECTION ── */
+    #community { border-top: 1px solid rgba(57,198,255,0.08); }
+    .social-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; margin-top: 2rem; }
+    .social-card {
+      display: flex; align-items: center; gap: 1.2rem;
+      background: rgba(14,22,48,0.55); border: 1px solid rgba(57,198,255,0.12);
+      border-radius: 18px; padding: 1.5rem; text-decoration: none;
+      backdrop-filter: blur(10px); transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+    }
+    .social-card:hover {
+      transform: translateY(-4px); border-color: rgba(57,198,255,0.4);
+      box-shadow: 0 0 30px var(--glow-b);
+    }
+    .social-icon { font-size: 2rem; flex-shrink: 0; }
+    .social-name { font-family: var(--font-h); font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+    .social-desc { font-size: 0.8rem; color: rgba(245,247,255,0.6); }
+    .social-cta { font-size: 0.72rem; color: var(--blue); font-weight: 600; margin-top: 0.4rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1; text-align: center; padding: 2.5rem 1.5rem;
+      border-top: 1px solid rgba(57,198,255,0.1);
+      font-size: 0.8rem; color: rgba(245,247,255,0.35);
+    }
+    footer .footer-logo { font-family: var(--font-h); color: var(--blue); margin-bottom: 0.5rem; font-size: 1.1rem; }
+    footer .disclaimer { max-width: 600px; margin: 0.8rem auto 0; font-size: 0.72rem; line-height: 1.6; }
+
+    /* ── AI CHATBOT ── */
+    #chatbot-toggle {
+      position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 2000;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      border: none; cursor: pointer;
+      box-shadow: 0 0 20px var(--glow-b), 0 0 20px var(--glow-p);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      animation: pulse-chat 2.5s ease-in-out infinite;
       transition: transform 0.2s;
     }
-
-    /* pulse animation on logo */
-    .pulse-logo {
-      animation: pulseGlow 2s infinite;
+    #chatbot-toggle:hover { transform: scale(1.1); }
+    @keyframes pulse-chat {
+      0%, 100% { box-shadow: 0 0 20px var(--glow-b), 0 0 20px var(--glow-p); }
+      50% { box-shadow: 0 0 40px var(--glow-b), 0 0 40px var(--glow-p); }
     }
-
-    @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 0 0 rgba(57,198,255,0.5);
-      }
-      70% {
-        box-shadow: 0 0 0 12px rgba(57,198,255,0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(57,198,255,0);
-      }
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      flex-wrap: wrap;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #F5F7FF;
-      font-weight: 500;
-      transition: 0.2s;
-      font-size: 0.95rem;
-    }
-
-    .nav-links a:hover {
-      color: #39C6FF;
-      text-shadow: 0 0 6px #39C6FF;
-    }
-
-    /* Banner */
-    .banner-img {
-      width: 100%;
-      max-height: 320px;
-      object-fit: cover;
-      display: block;
-      border-bottom: 2px solid rgba(57,198,255,0.3);
-    }
-
-    /* Hero Section */
-    .hero {
-      text-align: center;
-      padding: 60px 24px 70px;
-      background: radial-gradient(ellipse at 50% 20%, rgba(57,198,255,0.08), transparent);
-    }
-
-    .hero h1 {
-      font-size: 3.8rem;
-      background: linear-gradient(135deg, #fff, #39C6FF, #B14DFF);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.3rem;
-      max-width: 700px;
-      margin: 0 auto 2rem;
-      color: #cdd9ff;
-    }
-
-    .btn-primary {
-      background: linear-gradient(95deg, #39C6FF, #B14DFF);
-      border: none;
-      padding: 14px 38px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border-radius: 60px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.25s;
-      box-shadow: 0 0 12px rgba(57,198,255,0.6);
-      font-family: 'Orbitron', monospace;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 24px #39C6FF, 0 0 12px #B14DFF;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      border: 1.5px solid #B14DFF;
-      padding: 12px 28px;
-      border-radius: 40px;
-      color: #D58BFF;
-      font-weight: 500;
-      transition: 0.2s;
-      cursor: pointer;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(177,77,255,0.2);
-      box-shadow: 0 0 12px #B14DFF;
-      color: white;
-    }
-
-    /* Glassmorphic cards */
-    .glass-card {
-      background: rgba(12, 20, 40, 0.5);
-      backdrop-filter: blur(10px);
-      border-radius: 28px;
-      border: 1px solid rgba(57,198,255,0.25);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      transition: all 0.3s;
-    }
-
-    .glass-card:hover {
-      border-color: #39C6FF;
-      box-shadow: 0 0 22px rgba(57,198,255,0.4);
-    }
-
-    /* sections */
-    section {
-      padding: 70px 0;
-      border-bottom: 1px solid rgba(57,198,255,0.1);
-    }
-
-    .roadmap-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 28px;
-      margin-top: 30px;
-    }
-
-    .phase-card {
-      background: rgba(7, 11, 23, 0.7);
-      backdrop-filter: blur(8px);
-      border-radius: 28px;
-      padding: 24px;
-      transition: 0.2s;
-      border-left: 3px solid #39C6FF;
-    }
-
-    .phase-card h3 {
-      font-size: 1.6rem;
-      color: #6FEFFF;
-      margin-bottom: 1rem;
-    }
-
-    .phase-card ul {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    .phase-card li {
-      margin-bottom: 10px;
-      padding-left: 20px;
-      position: relative;
-      font-size: 0.9rem;
-    }
-
-    .phase-card li:before {
-      content: "🐾";
-      position: absolute;
-      left: 0;
-      color: #D58BFF;
-    }
-
-    .tokenomics-flex {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 32px;
-      justify-content: space-between;
-    }
-
-    .token-box {
-      flex: 1;
-      background: rgba(7, 11, 23, 0.6);
-      backdrop-filter: blur(6px);
-      border-radius: 32px;
-      padding: 28px;
-    }
-
-    .token-percent {
-      font-size: 3rem;
-      font-weight: 800;
-      font-family: 'Orbitron';
-      background: linear-gradient(135deg, #39C6FF, #B14DFF);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .ca-box {
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 50px;
-      padding: 16px 24px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      border: 1px solid #39C6FF;
-    }
-
-    .ca-text {
-      font-family: monospace;
-      font-size: 1rem;
-      word-break: break-all;
-      letter-spacing: 0.5px;
-    }
-
-    .copy-btn {
-      background: #39C6FF20;
-      border: 1px solid #39C6FF;
-      padding: 10px 20px;
-      border-radius: 40px;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .copy-btn:hover {
-      background: #39C6FF;
-      color: #070B17;
-      box-shadow: 0 0 10px #39C6FF;
-    }
-
-    .social-icons {
-      display: flex;
-      gap: 32px;
-      justify-content: center;
-      margin: 25px 0;
-    }
-
-    .social-icon {
-      font-size: 2.5rem;
-      transition: 0.2s;
-      color: #cdd9ff;
-    }
-
-    .social-icon:hover {
-      transform: translateY(-5px);
-      color: #39C6FF;
-      text-shadow: 0 0 8px #39C6FF;
-    }
-
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      background: rgba(0,0,0,0.4);
-      font-size: 0.9rem;
-    }
-
-    /* fade-in scroll */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(35px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* AI Chatbot Toggle */
-    .chatbot-toggle {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      background: linear-gradient(145deg, #39C6FF, #B14DFF);
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(57,198,255,0.6);
-      z-index: 200;
-      transition: 0.2s;
-    }
-    .chatbot-toggle i {
-      font-size: 28px;
-      color: white;
-    }
-    .chatbot-toggle:hover {
-      transform: scale(1.07);
-    }
-    .chat-window {
-      position: fixed;
-      bottom: 100px;
-      right: 28px;
-      width: 340px;
-      max-width: calc(100vw - 40px);
-      background: #0E1630ee;
-      backdrop-filter: blur(18px);
-      border-radius: 28px;
-      border: 1px solid #39C6FF;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
-      z-index: 199;
-      display: flex;
+    #chatbot-window {
+      display: none; position: fixed; bottom: 5.5rem; right: 1.8rem; z-index: 1999;
+      width: min(380px, calc(100vw - 2rem));
+      background: rgba(10,16,38,0.97); border: 1px solid rgba(57,198,255,0.25);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 0 40px var(--glow-b), 0 20px 60px rgba(0,0,0,0.6);
+      backdrop-filter: blur(20px);
       flex-direction: column;
-      overflow: hidden;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
     }
+    #chatbot-window.open { display: flex; }
     .chat-header {
-      background: #070B17;
-      padding: 14px 18px;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid #39C6FF;
+      background: linear-gradient(90deg, rgba(57,198,255,0.15), rgba(177,77,255,0.15));
+      padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(57,198,255,0.15);
     }
+    .chat-header-info { display: flex; align-items: center; gap: 0.7rem; }
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+      border: 2px solid var(--blue);
+      box-shadow: 0 0 10px var(--glow-b);
+    }
+    .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .chat-bot-name { font-family: var(--font-h); font-size: 0.78rem; color: var(--white); }
+    .chat-status { font-size: 0.68rem; color: var(--cyan); }
+    .chat-close { background: none; border: none; color: rgba(245,247,255,0.5); font-size: 1.2rem; cursor: pointer; }
     .chat-messages {
-      height: 280px;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      height: 320px; overflow-y: auto; padding: 1rem;
+      display: flex; flex-direction: column; gap: 0.8rem;
     }
-    .chat-msg {
-      background: #1a2542;
-      padding: 8px 14px;
-      border-radius: 20px;
-      max-width: 85%;
-      font-size: 0.85rem;
+    .msg { max-width: 88%; padding: 0.7rem 1rem; border-radius: 14px; font-size: 0.83rem; line-height: 1.5; }
+    .msg.bot {
+      background: rgba(57,198,255,0.1); border: 1px solid rgba(57,198,255,0.15);
+      color: var(--white); align-self: flex-start; border-bottom-left-radius: 4px;
     }
-    .bot-msg {
-      background: #2a1f42;
-      align-self: flex-start;
-      border-left: 3px solid #B14DFF;
+    .msg.user {
+      background: linear-gradient(135deg, rgba(177,77,255,0.2), rgba(57,198,255,0.2));
+      border: 1px solid rgba(177,77,255,0.2); color: var(--white);
+      align-self: flex-end; border-bottom-right-radius: 4px;
     }
-    .user-msg {
-      background: #39C6FF30;
-      align-self: flex-end;
-      border-right: 2px solid #39C6FF;
-    }
-    .chat-input-area {
-      display: flex;
-      border-top: 1px solid #39C6FF40;
-      padding: 10px;
-    }
-    .chat-input-area input {
-      flex: 1;
-      background: #070B17;
-      border: none;
-      padding: 10px;
-      border-radius: 50px;
-      color: white;
-      outline: none;
-    }
-    .chat-input-area button {
-      background: #39C6FF;
-      border: none;
-      margin-left: 8px;
-      border-radius: 40px;
-      padding: 0 14px;
-      cursor: pointer;
-    }
-    .quick-replies {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 10px 12px;
-      background: #070B1740;
-    }
+    .chat-quick { padding: 0.6rem 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; border-top: 1px solid rgba(57,198,255,0.1); }
     .quick-btn {
-      background: #ffffff10;
-      border: 1px solid #6FEFFF;
-      border-radius: 30px;
-      padding: 6px 12px;
-      font-size: 0.7rem;
-      cursor: pointer;
-      transition: 0.1s;
+      background: rgba(57,198,255,0.08); border: 1px solid rgba(57,198,255,0.2);
+      color: var(--cyan); font-size: 0.72rem; padding: 0.35rem 0.75rem; border-radius: 50px;
+      cursor: pointer; transition: background 0.2s; white-space: nowrap;
+      font-family: var(--font-b);
     }
-    .quick-btn:hover {
-      background: #39C6FF40;
+    .quick-btn:hover { background: rgba(57,198,255,0.18); }
+    .chat-input-wrap {
+      display: flex; gap: 0.5rem; padding: 0.8rem 1rem;
+      border-top: 1px solid rgba(57,198,255,0.1);
+    }
+    .chat-input {
+      flex: 1; background: rgba(57,198,255,0.06); border: 1px solid rgba(57,198,255,0.15);
+      border-radius: 10px; padding: 0.6rem 0.9rem; color: var(--white);
+      font-family: var(--font-b); font-size: 0.82rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .chat-input:focus { border-color: rgba(57,198,255,0.4); }
+    .chat-input::placeholder { color: rgba(245,247,255,0.3); }
+    .chat-send {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      border: none; border-radius: 10px; width: 38px; height: 38px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: box-shadow 0.2s;
+    }
+    .chat-send:hover { box-shadow: 0 0 14px var(--glow-b); }
+    .typing { display: flex; gap: 4px; align-items: center; padding: 0.5rem; }
+    .typing span {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--blue);
+      animation: typing-dot 1.2s ease-in-out infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-dot {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1.1); }
     }
 
-    @media (max-width: 780px) {
-      nav {
-        flex-direction: column;
-        gap: 12px;
-      }
-      .nav-links {
-        gap: 18px;
-        justify-content: center;
-      }
-      h2 {
-        font-size: 1.9rem;
-      }
-      .hero h1 {
-        font-size: 2.2rem;
-      }
-      .hero p {
-        font-size: 1rem;
-      }
-      .phase-card h3 {
-        font-size: 1.3rem;
-      }
-      .token-percent {
-        font-size: 2.2rem;
-      }
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .button-buy-hero {
-      text-decoration: none;
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0.75rem 1.2rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .about-grid { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .tokenomics-grid { grid-template-columns: 1fr; }
+      .social-grid { grid-template-columns: 1fr; }
+      .not-grid { grid-template-columns: 1fr; }
+      .hero { padding: 3rem 1.2rem 2.5rem; min-height: auto; }
+      .logo-frame { width: 110px; height: 110px; }
+      .section-title { font-size: 1.4rem; }
+      .token-percent { font-size: 2.8rem; }
+      .ca-address { font-size: 0.6rem; }
+      section { padding: 3.5rem 1.2rem; }
+      #chatbot-window { bottom: 5rem; right: 0.8rem; }
+      #chatbot-toggle { bottom: 1.2rem; right: 1rem; width: 50px; height: 50px; }
     }
-    hr {
-      border-color: #39C6FF30;
-      margin: 20px 0;
-    }
-    .impact-tag {
-      text-align: center;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-top: 20px;
+    @media (max-width: 480px) {
+      .hero-title { font-size: 1.9rem; }
+      .btn-primary, .btn-secondary { font-size: 0.75rem; padding: 0.75rem 1.5rem; }
+      .phase-card { padding: 1.4rem; }
+      .token-card { padding: 1.5rem; }
+      .ca-address { font-size: 0.55rem; }
+      .glass-card { padding: 1.4rem; }
     }
   </style>
 </head>
 <body>
 
+<!-- PARTICLE CANVAS -->
+<canvas id="particles"></canvas>
+
+<!-- NAVBAR -->
 <nav>
-  <div class="logo-area">
-    <div class="logo-frame pulse-logo">
-      <img src="whatever.png" alt="$WHATEVER logo" onerror="this.src='https://placehold.co/48x48/0E1630/39C6FF?text=W'">
-    </div>
-    <span style="font-family: 'Orbitron'; font-weight: 700; font-size: 1.4rem;">$WHATEVER</span>
-  </div>
+  <a class="nav-logo" href="#">
+    <img src="whatever.png" alt="$WHATEVER Logo" class="nav-logo-img" />
+    $WHATEVER
+  </a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#tokenomics">Tokenomics</a></li>
-    <li><a href="#ca">CA</a></li>
-    <li><a href="#social">Community</a></li>
+    <li><a href="#contract">Contract</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" class="nav-buy">BUY NOW</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- Banner after navbar -->
-<img src="banner.png" alt="$WHATEVER Banner" class="banner-img" onerror="this.src='https://placehold.co/1200x300/0E1630/39C6FF?text=WHATEVER+MOVEMENT'">
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#roadmap" onclick="closeMobile()">Roadmap</a>
+  <a href="#tokenomics" onclick="closeMobile()">Tokenomics</a>
+  <a href="#contract" onclick="closeMobile()">Contract</a>
+  <a href="#community" onclick="closeMobile()">Community</a>
+  <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" style="color:var(--blue)">🚀 BUY $WHATEVER</a>
+</div>
 
-<!-- Hero Section with Buy Button -->
-<section class="hero" id="hero">
-  <div class="container">
-    <h1>CALLING ON YOU</h1>
-    <p>JOIN THE MOVEMENT — Trade for dog shelters, build real impact on Solana. <br> 🐾 <strong>$WHATEVER</strong> | From Memes to Meaning</p>
-    <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" class="button-buy-hero">
-      <button class="btn-primary"><i class="fab fa-solana"></i> Buy $WHATEVER on Pump.fun</button>
-    </a>
+<!-- BANNER -->
+<div class="banner-wrap">
+  <img src="banner.png" alt="$WHATEVER — Memecoins With Real Impact" loading="eager" />
+</div>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero" id="home">
+  <div class="logo-frame">
+    <img src="whatever.png" alt="$WHATEVER Token Logo" />
+  </div>
+  <p class="hero-eyebrow">🐾 Solana Movement • Built For Good</p>
+  <h1 class="hero-title">THIS IS $WHATEVER</h1>
+  <p class="hero-sub">
+    A Solana movement built to prove one thing:<br/>
+    👉 <strong>Memecoins can create real-world impact.</strong><br/>
+    We're turning every trade into food, medical care, and rescue operations for shelter dogs.
+  </p>
+  <div class="hero-buttons">
+    <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" class="btn-primary">🚀 Buy $WHATEVER</a>
+    <a href="#about" class="btn-secondary">Learn More ↓</a>
   </div>
 </section>
 
-<main>
-  <!-- ABOUT / NARRATIVE Section (full text preserved) -->
-  <section id="about" class="fade-up">
-    <div class="container">
-      <h2>🐾 About / Narrative</h2>
-      <div class="glass-card" style="padding: 32px;">
-        <p style="font-size:1.2rem; margin-bottom:1rem;">🐶 <strong>THIS IS $WHATEVER 🐶</strong><br>A Solana movement built to prove one thing:</p>
-        <p style="font-size:1.5rem; font-weight:bold; color:#6FEFFF;">👉 Memecoins can create real-world impact.</p>
-        <hr>
-        <p><strong>Every trade generates Creator Rewards:</strong> 90% to Charity Vault → Converted to USDT → Donated to verified dog shelters. Transparent, trackable impact. 📈 10% to Growth Wallet for marketing, partnerships & community expansion.</p>
-        <hr>
-        <p><strong>🚫 WHAT WE ARE NOT</strong><br>• No hidden taxes • No insider dumps • No fake “utility” promises</p>
-        <p><strong>🐶 WHY IT MATTERS</strong><br>We’re turning trading volume into: Food for shelter dogs, Medical care, Rescue operations.</p>
-        <div class="impact-tag" style="margin-top:20px;"><i class="fas fa-paw"></i> REAL IMPACT • COMMUNITY DRIVEN • BUILT FOR GOOD • CHANGING LIVES <i class="fas fa-heart" style="color:#FFD76A;"></i></div>
-        <p style="margin-top:15px;">🐾 Built by community. Driven by impact. 🐶🧡</p>
+<!-- ════════════════ ABOUT ════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">🐾 About the Movement</span>
+      <h2 class="section-title">A Memecoin With a Mission</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text fade-in">
+        <p>
+          <strong>$WHATEVER</strong> isn't just another memecoin. It's a community-powered Solana movement with one clear purpose: prove that crypto culture can be a force for real, measurable good in the world.
+        </p>
+        <p>
+          Every time someone buys, sells, or trades <strong>$WHATEVER</strong>, a portion of creator rewards flows directly into the Charity Vault — converted to USDT and donated to verified dog shelters. No middlemen. No gimmicks. Transparent, trackable impact.
+        </p>
+        <p>
+          We're turning trading volume into <strong>food for shelter dogs</strong>, medical care, and rescue operations. You're early. You're part of the pack. Let's make crypto mean something again. 🐾
+        </p>
+        <p>
+          <strong>You're early. You're part of the pack. Let's make crypto mean something again. 🐾</strong>
+        </p>
+      </div>
+      <div class="about-highlights fade-in">
+        <div class="highlight-item">
+          <div class="highlight-icon">🐶</div>
+          <div>
+            <div class="highlight-label">Real Impact</div>
+            <div class="highlight-desc">Every trade generates charity rewards. 90% goes directly to verified dog shelters, converted to USDT for maximum transparency.</div>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🔒</div>
+          <div>
+            <div class="highlight-label">Community Driven</div>
+            <div class="highlight-desc">No hidden taxes. No insider dumps. No fake "utility" promises. Built by the community, for the community.</div>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">⚡</div>
+          <div>
+            <div class="highlight-label">Built on Solana</div>
+            <div class="highlight-desc">Lightning-fast transactions, near-zero fees, and a thriving ecosystem. $WHATEVER lives where the action is.</div>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🌐</div>
+          <div>
+            <div class="highlight-label">Transparent Donations</div>
+            <div class="highlight-desc">Public proof-of-impact campaigns, donation transparency reports, and shelter partnership announcements — all verifiable on-chain.</div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-
-  <!-- ROADMAP Section (full untouched) -->
-  <section id="roadmap" class="fade-up">
-    <div class="container">
-      <h2>📌 ROADMAP — FROM MEMES TO MEANING. 💜 TOGETHER, WE DO MORE.</h2>
-      <div class="roadmap-grid">
-        <div class="phase-card"><h3>PHASE 1 — FOUNDATION</h3><ul><li>Fair launch on Solana</li><li>Telegram community activation</li><li>Official X launch</li><li>Website development & release</li><li>Community raids & marketing push</li><li>Establish charity vault structure</li><li>Build strong holder base</li></ul></div>
-        <div class="phase-card"><h3>PHASE 2 — GROWTH</h3><ul><li>Influencer & partnership outreach</li><li>Expand marketing campaigns</li><li>Meme contests & community events</li><li>Increase visibility across Solana</li><li>Community spaces & AMAs</li><li>Grow global supporter network</li><li>Strengthen brand identity</li></ul></div>
-        <div class="phase-card"><h3>PHASE 3 — IMPACT</h3><ul><li>First official dog shelter donation</li><li>Donation transparency reports</li><li>Public proof-of-impact campaigns</li><li>Shelter partnership expansion</li><li>Community-selected charity initiatives</li><li>Long-term charity ecosystem planning</li><li>Establish $WHATEVER as a recognized charity movement</li></ul></div>
-        <div class="phase-card"><h3>PHASE 4 — EXPANSION</h3><ul><li>Explore utility & ecosystem features</li><li>Strategic collaborations</li><li>Merchandise & branding opportunities</li><li>Broader exchange visibility</li><li>Community governance concepts</li><li>Continued charity growth</li><li>Build a lasting movement beyond market cycles</li></ul></div>
-      </div>
-      <div class="impact-tag" style="margin-top: 24px;">REAL IMPACT • COMMUNITY DRIVEN • BUILT FOR GOOD • CHANGING LIVES</div>
-    </div>
-  </section>
-
-  <!-- TOKENOMICS (complete original texts) -->
-  <section id="tokenomics" class="fade-up">
-    <div class="container">
-      <h2>📊 Tokenomics 🧡 HOW IT WORKS</h2>
-      <div class="tokenomics-flex">
-        <div class="token-box"><span class="token-percent">90%</span> → <strong>Charity Vault</strong><br>• Converted to USDT<br>• Donated to verified dog shelters<br>• Transparent, trackable impact</div>
-        <div class="token-box"><span class="token-percent">10%</span> → <strong>Growth Wallet</strong><br>• Marketing<br>• Partnerships<br>• Community expansion</div>
-      </div>
-      <div style="margin-top: 35px; background: #0b1122; border-radius: 32px; padding: 28px;">
-        <p><strong>🚫 WHAT WE ARE NOT</strong><br>• No hidden taxes<br>• No insider dumps<br>• No fake “utility” promises</p>
-        <p style="margin-top: 16px;"><strong>🐶 WHY IT MATTERS</strong><br>We’re turning trading volume into:<br>• Food for shelter dogs<br>• Medical care<br>• Rescue operations</p>
-      </div>
-      <div style="margin-top: 20px; font-style:italic;">Every trade creates real-world tail wags. 🐾</div>
-    </div>
-  </section>
-
-  <!-- CA Section with functional copy button -->
-  <section id="ca" class="fade-up">
-    <div class="container">
-      <h2>🔐 Contract Address (CA)</h2>
-      <div class="ca-box">
-        <span class="ca-text"><i class="fas fa-qrcode"></i> AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump</span>
-        <button class="copy-btn" id="copyCaBtn"><i class="far fa-copy"></i> Copy CA</button>
-      </div>
-      <p style="margin-top: 20px; text-align: center;">⚡ <strong>Buy link:</strong> <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" style="color:#39C6FF;">pump.fun/coin/WHATEVER</a></p>
-    </div>
-  </section>
-
-  <!-- SOCIAL MEDIA Section -->
-  <section id="social" class="fade-up">
-    <div class="container" style="text-align: center;">
-      <h2>🌐 JOIN THE PACK</h2>
-      <div class="social-icons">
-        <a href="https://x.com/tokenwhatever" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
-        <a href="https://t.me/OriginalWHATEVER55" target="_blank" class="social-icon"><i class="fab fa-telegram"></i></a>
-      </div>
-      <p><strong>X (Twitter):</strong> https://x.com/tokenwhatever &nbsp;|&nbsp; <strong>Telegram:</strong> https://t.me/OriginalWHATEVER55</p>
-      <div style="margin-top: 32px; background: rgba(255,215,106,0.08); border-radius: 40px; padding: 16px;">
-        <p>✨ You’re early.<br>You’re part of the pack.<br><strong>Let’s make crypto mean something again. 🐾</strong></p>
+    <div class="fade-in" style="margin-top:3rem">
+      <span class="section-tag" style="color:var(--violet); border-color:rgba(177,77,255,0.3); background:rgba(177,77,255,0.06)">🚫 What We Are NOT</span>
+      <div class="not-grid">
+        <div class="not-item">
+          <div class="icon">🚫</div>
+          <p><strong style="color:var(--white)">No Hidden Taxes</strong><br/>What you see is what you get. Zero surprise fees draining your wallet.</p>
+        </div>
+        <div class="not-item">
+          <div class="icon">🚫</div>
+          <p><strong style="color:var(--white)">No Insider Dumps</strong><br/>Fair launch from the start. No team allocations designed to rug the community.</p>
+        </div>
+        <div class="not-item">
+          <div class="icon">🚫</div>
+          <p><strong style="color:var(--white)">No Fake Utility</strong><br/>We don't promise vaporware. Our utility is simple: real donations to real shelters.</p>
+        </div>
       </div>
     </div>
-  </section>
-</main>
+  </div>
+</section>
 
+<!-- ════════════════ ROADMAP ════════════════ -->
+<section id="roadmap">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">🗺️ Roadmap</span>
+      <h2 class="section-title">From Memes to Meaning</h2>
+      <div class="section-divider"></div>
+      <p class="roadmap-subtitle">💜 TOGETHER, WE DO MORE.</p>
+    </div>
+    <div class="roadmap-grid">
+      <!-- Phase 1 -->
+      <div class="phase-card fade-in">
+        <div class="phase-number">Phase 1</div>
+        <div class="phase-title">— FOUNDATION</div>
+        <ul class="phase-list">
+          <li>Fair launch on Solana</li>
+          <li>Telegram community activation</li>
+          <li>Official X launch</li>
+          <li>Website development &amp; release</li>
+          <li>Community raids &amp; marketing push</li>
+          <li>Establish charity vault structure</li>
+          <li>Build strong holder base</li>
+        </ul>
+      </div>
+      <!-- Phase 2 -->
+      <div class="phase-card fade-in">
+        <div class="phase-number">Phase 2</div>
+        <div class="phase-title">— GROWTH</div>
+        <ul class="phase-list">
+          <li>Influencer &amp; partnership outreach</li>
+          <li>Expand marketing campaigns</li>
+          <li>Meme contests &amp; community events</li>
+          <li>Increase visibility across Solana</li>
+          <li>Community spaces &amp; AMAs</li>
+          <li>Grow global supporter network</li>
+          <li>Strengthen brand identity</li>
+        </ul>
+      </div>
+      <!-- Phase 3 -->
+      <div class="phase-card fade-in">
+        <div class="phase-number">Phase 3</div>
+        <div class="phase-title">— IMPACT</div>
+        <ul class="phase-list">
+          <li>First official dog shelter donation</li>
+          <li>Donation transparency reports</li>
+          <li>Public proof-of-impact campaigns</li>
+          <li>Shelter partnership expansion</li>
+          <li>Community-selected charity initiatives</li>
+          <li>Long-term charity ecosystem planning</li>
+          <li>Establish $WHATEVER as a recognized charity movement</li>
+        </ul>
+      </div>
+      <!-- Phase 4 -->
+      <div class="phase-card fade-in">
+        <div class="phase-number">Phase 4</div>
+        <div class="phase-title">— EXPANSION</div>
+        <ul class="phase-list">
+          <li>Explore utility &amp; ecosystem features</li>
+          <li>Strategic collaborations</li>
+          <li>Merchandise &amp; branding opportunities</li>
+          <li>Broader exchange visibility</li>
+          <li>Community governance concepts</li>
+          <li>Continued charity growth</li>
+          <li>Build a lasting movement beyond market cycles</li>
+        </ul>
+      </div>
+    </div>
+    <div class="roadmap-footer fade-in">
+      <span>REAL IMPACT</span>•<span>COMMUNITY DRIVEN</span>•<span>BUILT FOR GOOD</span>•<span>CHANGING LIVES</span>
+    </div>
+    <p style="text-align:center; margin-top:1rem; color:rgba(245,247,255,0.5); font-size:0.85rem; font-style:italic;">BUILT BY COMMUNITY. DRIVEN BY IMPACT. 🐶🧡</p>
+  </div>
+</section>
+
+<!-- ════════════════ TOKENOMICS ════════════════ -->
+<section id="tokenomics">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">🧡 Tokenomics</span>
+      <h2 class="section-title">How It Works</h2>
+      <div class="section-divider"></div>
+    </div>
+    <p class="tokenomics-intro fade-in">
+      Every trade generates <strong style="color:var(--blue)">Creator Rewards</strong>. Here's exactly where every single percentage point goes — transparent, trackable, and built for good.
+    </p>
+    <div class="tokenomics-grid">
+      <div class="token-card charity fade-in">
+        <div class="token-percent">90%</div>
+        <div class="token-label">🐾 Charity Vault</div>
+        <ul class="token-list">
+          <li>Converted to USDT</li>
+          <li>Donated to verified dog shelters</li>
+          <li>Transparent, trackable impact</li>
+          <li>Public proof-of-impact campaigns</li>
+        </ul>
+      </div>
+      <div class="token-card growth fade-in">
+        <div class="token-percent">10%</div>
+        <div class="token-label">📈 Growth Wallet</div>
+        <ul class="token-list">
+          <li>Marketing</li>
+          <li>Partnerships</li>
+          <li>Community expansion</li>
+          <li>Ecosystem development</li>
+        </ul>
+      </div>
+    </div>
+    <div class="token-note fade-in">
+      <div class="token-note-title">🐶 Why It Matters</div>
+      <p>
+        We're turning trading volume into <strong>food for shelter dogs</strong>, <strong>medical care</strong>, and <strong>rescue operations</strong>.
+        Every transaction you make has a direct, real-world impact on animals in need.
+        This isn't charity washing — it's the entire point of the project.
+        The more we trade, the more dogs we save. It's that simple.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ CONTRACT ════════════════ -->
+<section id="contract">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">🔗 Contract Address</span>
+      <h2 class="section-title">Get $WHATEVER</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="ca-box fade-in">
+      <div class="ca-label">Official Contract Address (CA) — Solana</div>
+      <div class="ca-address-wrap">
+        <span class="ca-address" id="caAddress">AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump</span>
+        <button class="copy-btn" id="copyBtn" onclick="copyCA()">📋 COPY</button>
+      </div>
+      <p class="ca-note">⚠️ Always verify the contract address. The only official CA is above.</p>
+      <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" class="ca-buy-link">🚀 Buy on Pump.fun</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ COMMUNITY / SOCIAL ════════════════ -->
+<section id="community">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">🌐 Community</span>
+      <h2 class="section-title">Join the Pack</h2>
+      <div class="section-divider"></div>
+    </div>
+    <p style="color:rgba(245,247,255,0.7); font-size:0.95rem; line-height:1.7;" class="fade-in">
+      You're early. You're part of the pack. Connect with the <strong style="color:var(--blue)">$WHATEVER</strong> community across official channels and help us change lives — one trade at a time. 🐾
+    </p>
+    <div class="social-grid">
+      <a href="https://x.com/tokenwhatever" target="_blank" rel="noopener" class="social-card fade-in">
+        <div class="social-icon">🐦</div>
+        <div>
+          <div class="social-name">X (Twitter)</div>
+          <div class="social-desc">Latest news, announcements, community raids &amp; alpha drops</div>
+          <div class="social-cta">@tokenwhatever →</div>
+        </div>
+      </a>
+      <a href="https://t.me/OriginalWHATEVER55" target="_blank" rel="noopener" class="social-card fade-in">
+        <div class="social-icon">✈️</div>
+        <div>
+          <div class="social-name">Telegram</div>
+          <div class="social-desc">Real-time chat, AMAs, community spaces &amp; holder updates</div>
+          <div class="social-cta">t.me/OriginalWHATEVER55 →</div>
+        </div>
+      </a>
+      <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" class="social-card fade-in">
+        <div class="social-icon">🚀</div>
+        <div>
+          <div class="social-name">Pump.fun</div>
+          <div class="social-desc">Buy $WHATEVER on pump.fun — the home of the movement</div>
+          <div class="social-cta">Trade now →</div>
+        </div>
+      </a>
+      <div class="glass-card fade-in" style="border-radius:18px;">
+        <div class="social-icon" style="font-size:1.5rem; margin-bottom:0.6rem;">🐾</div>
+        <div class="social-name" style="font-family:var(--font-h); font-size:0.85rem; color:var(--white); margin-bottom:0.4rem;">BUILT BY COMMUNITY</div>
+        <div class="social-desc" style="font-size:0.82rem; color:rgba(245,247,255,0.6); line-height:1.6;">
+          Every holder is part of the movement. Share, raid, and spread the word — together we're turning memes into something that matters. 🧡
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <p>© 2025 $WHATEVER — Solana Charity Movement. Community built, shelter driven.</p>
-  <p><i class="fas fa-dog"></i> From Memes to Meaning, every trade counts.</p>
+  <div class="footer-logo">$WHATEVER</div>
+  <p>A Solana charity movement. Built by community. Driven by impact. 🐶🧡</p>
+  <p class="disclaimer">
+    $WHATEVER is a community-driven meme token on the Solana blockchain. Cryptocurrency investments carry high risk. Nothing on this site constitutes financial advice. Always do your own research (DYOR) before investing. Only invest what you can afford to lose.
+  </p>
 </footer>
 
-<!-- AI Chatbot toggle + logic -->
-<div class="chatbot-toggle" id="chatToggle">
-  <i class="fas fa-comment-dots"></i>
-</div>
-<div class="chat-window" id="chatWindow" style="display: none;">
+<!-- AI CHATBOT -->
+<button id="chatbot-toggle" onclick="toggleChat()" aria-label="Open AI Assistant">🤖</button>
+<div id="chatbot-window">
   <div class="chat-header">
-    <span><i class="fas fa-robot"></i> $WHATEVER AI Assistant</span>
-    <i class="fas fa-times" id="closeChat" style="cursor:pointer;"></i>
+    <div class="chat-header-info">
+      <div class="chat-avatar"><img src="whatever.png" alt="WhateverBot" /></div>
+      <div>
+        <div class="chat-bot-name">WhateverBot 🐾</div>
+        <div class="chat-status">● Online — Ask me anything!</div>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
   </div>
   <div class="chat-messages" id="chatMessages">
-    <div class="chat-msg bot-msg">🐾 Hello! I'm the WHATEVER bot. Ask me anything about tokenomics, roadmap, CA, or charity impact!</div>
+    <div class="msg bot">
+      Hey there, Pack Member! 🐾 I'm WhateverBot, your $WHATEVER guide. Ask me anything about the project, tokenomics, how to buy, or our charity mission! 🐶🧡
+    </div>
   </div>
-  <div class="quick-replies" id="quickReplies">
-    <div class="quick-btn" data-question="What is $WHATEVER?">What is $WHATEVER?</div>
-    <div class="quick-btn" data-question="Tokenomics breakdown">Tokenomics breakdown</div>
-    <div class="quick-btn" data-question="Where do donations go?">Where do donations go?</div>
-    <div class="quick-btn" data-question="Roadmap phases">Roadmap phases</div>
-    <div class="quick-btn" data-question="CA and buy link">CA and buy link</div>
+  <div class="chat-quick" id="quickBtns">
+    <button class="quick-btn" onclick="askBot('What is $WHATEVER?')">What is $WHATEVER?</button>
+    <button class="quick-btn" onclick="askBot('How do I buy?')">How do I buy?</button>
+    <button class="quick-btn" onclick="askBot('What is the CA?')">Contract Address</button>
+    <button class="quick-btn" onclick="askBot('How does the charity work?')">Charity?</button>
+    <button class="quick-btn" onclick="askBot('Tell me about the tokenomics')">Tokenomics</button>
+    <button class="quick-btn" onclick="askBot('What is the roadmap?')">Roadmap</button>
   </div>
-  <div class="chat-input-area">
-    <input type="text" id="chatInput" placeholder="Ask me...">
-    <button id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
+  <div class="chat-input-wrap">
+    <input class="chat-input" id="chatInput" type="text" placeholder="Ask about $WHATEVER..." onkeydown="if(event.key==='Enter')sendChat()" />
+    <button class="chat-send" onclick="sendChat()">➤</button>
   </div>
 </div>
 
 <script>
-  // Fade-in on scroll
-  const fadeEls = document.querySelectorAll('.fade-up');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.12 });
-  fadeEls.forEach(el => observer.observe(el));
-
-  // COPY CA FUNCTIONALITY
-  const copyBtn = document.getElementById('copyCaBtn');
-  const caText = "AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump";
-  copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(caText).then(() => {
-      const original = copyBtn.innerHTML;
-      copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-      setTimeout(() => { copyBtn.innerHTML = original; }, 2000);
-    }).catch(() => alert("Manual copy: " + caText));
+/* ─── PARTICLE SYSTEM ─── */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+function mkParticle() {
+  return { x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.5+0.5,
+    vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+    a: Math.random(), da: (Math.random()-0.5)*0.004,
+    c: Math.random()>0.5 ? '57,198,255' : '177,77,255' };
+}
+for(let i=0;i<120;i++) particles.push(mkParticle());
+function drawParticles() {
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy; p.a+=p.da;
+    if(p.x<0||p.x>W) p.vx*=-1;
+    if(p.y<0||p.y>H) p.vy*=-1;
+    p.a=Math.max(0.05,Math.min(0.7,p.a));
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.c},${p.a})`; ctx.fill();
   });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
 
-  // ----- AI CHATBOT with preset knowledge base (answers all project related)
-  const knowledgeBase = {
-    "what is $whatever": "$WHATEVER is a Solana memecoin with real utility: 90% of creator rewards go directly to verified dog shelters. It's a community-driven charity movement, turning trading volume into food, medical care & rescue operations.",
-    "tokenomics": "Every trade: 90% to Charity Vault (converted to USDT & donated to dog shelters), 10% to Growth Wallet for marketing, partnerships & community expansion. No hidden taxes, no insider dumps.",
-    "where do donations go": "Donations go to verified dog shelters, providing food, medical care, rescue operations. 100% transparent with proof-of-impact campaigns and public reports.",
-    "roadmap phases": "Phase 1: Foundation (Fair launch, community raids, charity vault). Phase 2: Growth (Influencer outreach, AMAs). Phase 3: Impact (first shelter donation, transparency). Phase 4: Expansion (utility, merchandise, governance). Full details on the website roadmap section!",
-    "ca and buy link": "Contract Address: AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump. Buy on Pump.fun: https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump",
-    "how to buy": "You can buy $WHATEVER on Pump.fun using Solana (SOL). Connect your wallet (Phantom, etc.) and swap. Visit the buy link in the CA section or hero button.",
-    "charity vault": "90% of Creator Rewards fund the Charity Vault. Funds are converted to USDT and sent to verified shelters. Full transparency reports coming after first donation.",
-    "community": "Join our X (Twitter) @tokenwhatever and Telegram t.me/OriginalWHATEVER55. We're building a movement of meme lovers and dog rescuers!"
-  };
-  
-  function getBotReply(userMsg) {
-    let lower = userMsg.toLowerCase();
-    if (lower.includes("tokenomics") || lower.includes("90%") || lower.includes("charity vault")) return knowledgeBase["tokenomics"];
-    if (lower.includes("donation") || lower.includes("shelter") || lower.includes("where do donations")) return knowledgeBase["where do donations go"];
-    if (lower.includes("roadmap") || lower.includes("phase")) return knowledgeBase["roadmap phases"];
-    if (lower.includes("ca") || lower.includes("contract") || lower.includes("buy link")) return knowledgeBase["ca and buy link"];
-    if (lower.includes("how to buy") || lower.includes("purchase")) return knowledgeBase["how to buy"];
-    if (lower.includes("community") || lower.includes("telegram") || lower.includes("twitter")) return knowledgeBase["community"];
-    if (lower.includes("what is") || lower.includes("what's") || lower.includes("tell me about")) return knowledgeBase["what is $whatever"];
-    return "🐕 I'm your WHATEVER assistant! Check out our tokenomics (90% charity), roadmap, or CA. Type 'tokenomics', 'roadmap', 'donations', or 'CA' for quick info! 🌟";
-  }
+/* ─── HAMBURGER ─── */
+document.getElementById('hamburger').onclick = () => document.getElementById('mobileMenu').classList.toggle('open');
+document.getElementById('mobileClose').onclick = () => document.getElementById('mobileMenu').classList.remove('open');
+function closeMobile() { document.getElementById('mobileMenu').classList.remove('open'); }
 
-  const chatWindow = document.getElementById('chatWindow');
-  const chatToggle = document.getElementById('chatToggle');
-  const closeChat = document.getElementById('closeChat');
-  const chatMessagesDiv = document.getElementById('chatMessages');
-  const chatInput = document.getElementById('chatInput');
-  const sendBtn = document.getElementById('sendMsgBtn');
-  
-  function appendMessage(msg, isUser = false) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `chat-msg ${isUser ? 'user-msg' : 'bot-msg'}`;
-    msgDiv.innerHTML = isUser ? `<i class="fas fa-user"></i> ${msg}` : `<i class="fas fa-robot"></i> ${msg}`;
-    chatMessagesDiv.appendChild(msgDiv);
-    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
-  }
-  
-  function botResponse(inputText) {
-    const reply = getBotReply(inputText);
-    appendMessage(reply, false);
-  }
-  
-  function handleUserMessage() {
-    const raw = chatInput.value.trim();
-    if (raw === "") return;
-    appendMessage(raw, true);
-    chatInput.value = "";
-    botResponse(raw);
-  }
-  
-  sendBtn.addEventListener('click', handleUserMessage);
-  chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleUserMessage(); });
-  
-  // Quick replies
-  document.querySelectorAll('.quick-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const question = btn.getAttribute('data-question');
-      appendMessage(question, true);
-      botResponse(question);
-    });
-  });
-  
-  chatToggle.addEventListener('click', () => {
-    if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
-      chatWindow.style.display = 'flex';
-    } else {
-      chatWindow.style.display = 'none';
+/* ─── SCROLL FADE IN ─── */
+const faders = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if(e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      observer.unobserve(e.target);
     }
   });
-  closeChat.addEventListener('click', () => {
-    chatWindow.style.display = 'none';
+}, { threshold: 0.12 });
+faders.forEach(f => observer.observe(f));
+
+/* ─── COPY CA ─── */
+function copyCA() {
+  const addr = 'AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump';
+  navigator.clipboard.writeText(addr).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ COPIED!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 COPY'; btn.classList.remove('copied'); }, 2500);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = addr; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ COPIED!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 COPY'; btn.classList.remove('copied'); }, 2500);
   });
-  
-  // additional pulse for logo
-  const logoFrame = document.querySelector('.logo-frame');
-  setInterval(() => {
-    logoFrame.classList.add('pulse-logo');
-    setTimeout(() => logoFrame.classList.remove('pulse-logo'), 800);
-  }, 3000);
-  
-  // preload initial visibility
+}
+
+/* ─── CHATBOT ─── */
+let chatOpen = false;
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const w = document.getElementById('chatbot-window');
+  w.classList.toggle('open', chatOpen);
+  if(chatOpen) document.getElementById('chatInput').focus();
+}
+
+const KB = {
+  "what is $whatever": "🐾 $WHATEVER is a Solana memecoin with a real mission! It's a community-powered movement that channels 90% of creator rewards into a Charity Vault, which gets donated to verified dog shelters as USDT. Every trade helps feed, heal, and rescue shelter dogs. You're not just aping in — you're making a difference. 🐶🧡",
+  "what is whatever": "🐾 $WHATEVER is a Solana memecoin with a real mission! It's a community-powered movement that channels 90% of creator rewards into a Charity Vault, which gets donated to verified dog shelters as USDT. Every trade helps feed, heal, and rescue shelter dogs. 🐶🧡",
+  "how do i buy": "🚀 Buying $WHATEVER is easy!\n\n1️⃣ Get a Solana wallet (Phantom or Solflare)\n2️⃣ Buy SOL from an exchange\n3️⃣ Head to pump.fun\n4️⃣ Paste the CA: AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n5️⃣ Swap SOL for $WHATEVER\n\n🔗 Direct link: pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump",
+  "how to buy": "🚀 To buy $WHATEVER: Set up a Solana wallet (Phantom), fund it with SOL, go to pump.fun and search for the CA: AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump — then swap! Easy. 🐾",
+  "contract address": "📋 Official Contract Address (CA):\n\nAJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\n⚠️ Always verify this address. There is only ONE official $WHATEVER token. Beware of fakes!",
+  "what is the ca": "📋 Official CA: AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\nBuy on pump.fun using this address. Verify before you trade! ✅",
+  "ca": "📋 Official CA: AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\n🔗 pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump",
+  "charity": "🐶 The Charity Vault is the heart of $WHATEVER! Here's how it works:\n\n🐾 90% of creator rewards → Charity Vault\n• Converted to USDT\n• Donated to verified dog shelters\n• Fully transparent & trackable\n\nWe'll publish donation transparency reports and public proof-of-impact campaigns. Real money, real dogs, real change. 🧡",
+  "how does the charity work": "🐾 Every trade generates Creator Rewards. 90% flows to the Charity Vault, gets converted to USDT, and is donated to verified dog shelters. We publish full transparency reports so you can see exactly where the money goes. 🐶",
+  "tokenomics": "🧡 $WHATEVER Tokenomics:\n\n🐾 90% → Charity Vault\n• Converted to USDT\n• Donated to dog shelters\n• Transparent impact\n\n📈 10% → Growth Wallet\n• Marketing\n• Partnerships\n• Community expansion\n\nNo hidden taxes. No insider allocations. Simple, fair, transparent. ✅",
+  "tell me about the tokenomics": "🧡 Simple tokenomics: 90% of creator rewards go to dog shelter donations (via the Charity Vault as USDT), and 10% goes to the Growth Wallet for marketing and partnerships. No hidden taxes, no rug mechanics. Just clean, community-first design. 🐾",
+  "roadmap": "🗺️ $WHATEVER Roadmap:\n\n📍 Phase 1 — Foundation: Fair launch, Telegram, X, website, charity vault structure\n\n📍 Phase 2 — Growth: Influencers, marketing, meme contests, AMAs, global network\n\n📍 Phase 3 — Impact: First shelter donation, transparency reports, shelter partnerships\n\n📍 Phase 4 — Expansion: Utility features, merchandise, exchange listings, governance\n\nFrom memes to meaning — together we do more! 💜",
+  "what is the roadmap": "🗺️ The roadmap has 4 phases: Foundation (launch & community), Growth (marketing & partnerships), Impact (first donations & shelter expansion), and Expansion (utility, merch, exchanges, governance). We're just getting started! 🐾",
+  "socials": "🌐 Official $WHATEVER Channels:\n\n🐦 X (Twitter): @tokenwhatever\n✈️ Telegram: t.me/OriginalWHATEVER55\n🚀 Pump.fun: pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\nJoin the pack and be part of the movement! 🐶",
+  "social media": "🌐 Find us at:\n• X: @tokenwhatever\n• Telegram: t.me/OriginalWHATEVER55\n• Pump.fun for trading!\n\nJoin the pack! 🐾",
+  "telegram": "✈️ Join our Telegram community: t.me/OriginalWHATEVER55\n\nGet real-time updates, community chat, AMAs, and holder announcements! 🐶",
+  "twitter": "🐦 Follow us on X: @tokenwhatever (https://x.com/tokenwhatever)\n\nLatest news, raids, alpha, and community vibes! 🐾",
+  "rug": "🔒 $WHATEVER is designed to be as fair as possible:\n• Fair launch on pump.fun — no pre-sale\n• No hidden taxes\n• No insider dumps\n• Charity structure built in from day one\n\nAlways DYOR (do your own research) — we're just here to do good. 🐾",
+  "is it safe": "🔒 $WHATEVER had a fair launch on pump.fun with no pre-sale or insider allocation. That said, all crypto carries risk. The team is building transparently with charity at the core. Always invest only what you can afford to lose. DYOR! 🐾",
+  "solana": "⚡ $WHATEVER is built on Solana — the fastest Layer 1 blockchain with near-zero fees and a massive thriving ecosystem. Perfect for a community-driven charity token! 🐾",
+  "pump.fun": "🚀 $WHATEVER launched on pump.fun! You can buy directly at:\nhttps://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\npump.fun is a fair launch launchpad on Solana. 🐾",
+  "donation": "🐾 The first official dog shelter donation will happen in Phase 3 of the roadmap! We'll publish full transparency reports and public proof-of-impact campaigns so you can see exactly where every dollar goes. 🐶🧡",
+  "dog": "🐶 Everything we do is for the dogs! $WHATEVER exists to feed, heal, and rescue shelter dogs around the world. 90% of our creator rewards go directly to verified dog shelters. Let's save some pups! 🐾🧡",
+  "hello": "Hey there, Pack Member! 🐾 How can I help you today? Ask me about $WHATEVER, how to buy, tokenomics, charity, or anything else!",
+  "hi": "Hey! 🐾 Welcome to $WHATEVER! What would you like to know? I can tell you about the token, how to buy, our charity mission, or the roadmap!",
+  "hey": "Hey Pack Member! 🐶 What can I help you with today? Ask me anything about $WHATEVER!",
+};
+
+function getBotReply(input) {
+  const lower = input.toLowerCase().trim();
+  for(const key in KB) {
+    if(lower.includes(key)) return KB[key];
+  }
+  return "🤔 Great question! I'm not sure about that specific one. For the latest info, join our Telegram (t.me/OriginalWHATEVER55) or follow us on X (@tokenwhatever). You can also check the sections on this page for full details! 🐾";
+}
+
+function addMsg(text, type) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + type;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const t = document.createElement('div');
+  t.className = 'msg bot'; t.id = 'typing-indicator';
+  t.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  msgs.appendChild(t); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if(t) t.remove();
+}
+
+function askBot(question) {
+  addMsg(question, 'user');
+  document.getElementById('quickBtns').style.display = 'none';
+  showTyping();
   setTimeout(() => {
-    if (document.querySelectorAll('.fade-up').length) {
-      document.querySelectorAll('.fade-up').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight-100) el.classList.add('visible'); });
-    }
-  }, 100);
+    removeTyping();
+    addMsg(getBotReply(question), 'bot');
+  }, 700 + Math.random()*400);
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const val = input.value.trim();
+  if(!val) return;
+  input.value = '';
+  askBot(val);
+}
 </script>
 </body>
 </html>
