@@ -381,7 +381,25 @@
       transform: translateY(-4px); border-color: rgba(57,198,255,0.4);
       box-shadow: 0 0 30px var(--glow-b);
     }
-    .social-icon { font-size: 2rem; flex-shrink: 0; }
+    /* ── SOCIAL ICON CONTAINER ── */
+    .social-icon-wrap {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .social-icon-wrap svg { width: 26px; height: 26px; }
+    .social-icon-wrap.x-icon {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .social-icon-wrap.tg-icon {
+      background: rgba(39,167,228,0.12);
+      border: 1px solid rgba(39,167,228,0.25);
+    }
+    .social-icon-wrap.discord-icon {
+      background: rgba(88,101,242,0.12);
+      border: 1px solid rgba(88,101,242,0.3);
+    }
     .social-name { font-family: var(--font-h); font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
     .social-desc { font-size: 0.8rem; color: rgba(245,247,255,0.6); }
     .social-cta { font-size: 0.72rem; color: var(--blue); font-weight: 600; margin-top: 0.4rem; }
@@ -666,7 +684,6 @@
       <p class="roadmap-subtitle">💜 TOGETHER, WE DO MORE.</p>
     </div>
     <div class="roadmap-grid">
-      <!-- Phase 1 -->
       <div class="phase-card fade-in">
         <div class="phase-number">Phase 1</div>
         <div class="phase-title">— FOUNDATION</div>
@@ -680,7 +697,6 @@
           <li>Build strong holder base</li>
         </ul>
       </div>
-      <!-- Phase 2 -->
       <div class="phase-card fade-in">
         <div class="phase-number">Phase 2</div>
         <div class="phase-title">— GROWTH</div>
@@ -694,7 +710,6 @@
           <li>Strengthen brand identity</li>
         </ul>
       </div>
-      <!-- Phase 3 -->
       <div class="phase-card fade-in">
         <div class="phase-number">Phase 3</div>
         <div class="phase-title">— IMPACT</div>
@@ -708,7 +723,6 @@
           <li>Establish $WHATEVER as a recognized charity movement</li>
         </ul>
       </div>
-      <!-- Phase 4 -->
       <div class="phase-card fade-in">
         <div class="phase-number">Phase 4</div>
         <div class="phase-title">— EXPANSION</div>
@@ -807,37 +821,61 @@
       You're early. You're part of the pack. Connect with the <strong style="color:var(--blue)">$WHATEVER</strong> community across official channels and help us change lives — one trade at a time. 🐾
     </p>
     <div class="social-grid">
+
+      <!-- X / Twitter -->
       <a href="https://x.com/tokenwhatever" target="_blank" rel="noopener" class="social-card fade-in">
-        <div class="social-icon">🐦</div>
+        <div class="social-icon-wrap x-icon">
+          <!-- X (Twitter) official SVG logo -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z" fill="white"/>
+          </svg>
+        </div>
         <div>
           <div class="social-name">X (Twitter)</div>
           <div class="social-desc">Latest news, announcements, community raids &amp; alpha drops</div>
           <div class="social-cta">@tokenwhatever →</div>
         </div>
       </a>
+
+      <!-- Telegram -->
       <a href="https://t.me/OriginalWHATEVER55" target="_blank" rel="noopener" class="social-card fade-in">
-        <div class="social-icon">✈️</div>
+        <div class="social-icon-wrap tg-icon">
+          <!-- Telegram official SVG logo -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" fill="#27A7E4"/>
+          </svg>
+        </div>
         <div>
           <div class="social-name">Telegram</div>
           <div class="social-desc">Real-time chat, AMAs, community spaces &amp; holder updates</div>
           <div class="social-cta">t.me/OriginalWHATEVER55 →</div>
         </div>
       </a>
-      <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" class="social-card fade-in">
-        <div class="social-icon">🚀</div>
+
+      <!-- Discord -->
+      <a href="https://discord.gg/rqwadpvq9" target="_blank" rel="noopener" class="social-card fade-in">
+        <div class="social-icon-wrap discord-icon">
+          <!-- Discord official SVG logo -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026c.462-.62.874-1.275 1.226-1.963.021-.04.001-.088-.041-.104a13.201 13.201 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z" fill="#5865F2"/>
+          </svg>
+        </div>
         <div>
-          <div class="social-name">Pump.fun</div>
-          <div class="social-desc">Buy $WHATEVER on pump.fun — the home of the movement</div>
-          <div class="social-cta">Trade now →</div>
+          <div class="social-name">Discord</div>
+          <div class="social-desc">Join our server for community chat, events &amp; exclusive holder perks</div>
+          <div class="social-cta">discord.gg/rqwadpvq9 →</div>
         </div>
       </a>
+
+      <!-- Built by Community card -->
       <div class="glass-card fade-in" style="border-radius:18px;">
-        <div class="social-icon" style="font-size:1.5rem; margin-bottom:0.6rem;">🐾</div>
+        <div style="font-size:1.5rem; margin-bottom:0.6rem;">🐾</div>
         <div class="social-name" style="font-family:var(--font-h); font-size:0.85rem; color:var(--white); margin-bottom:0.4rem;">BUILT BY COMMUNITY</div>
         <div class="social-desc" style="font-size:0.82rem; color:rgba(245,247,255,0.6); line-height:1.6;">
           Every holder is part of the movement. Share, raid, and spread the word — together we're turning memes into something that matters. 🧡
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -969,10 +1007,11 @@ const KB = {
   "tell me about the tokenomics": "🧡 Simple tokenomics: 90% of creator rewards go to dog shelter donations (via the Charity Vault as USDT), and 10% goes to the Growth Wallet for marketing and partnerships. No hidden taxes, no rug mechanics. Just clean, community-first design. 🐾",
   "roadmap": "🗺️ $WHATEVER Roadmap:\n\n📍 Phase 1 — Foundation: Fair launch, Telegram, X, website, charity vault structure\n\n📍 Phase 2 — Growth: Influencers, marketing, meme contests, AMAs, global network\n\n📍 Phase 3 — Impact: First shelter donation, transparency reports, shelter partnerships\n\n📍 Phase 4 — Expansion: Utility features, merchandise, exchange listings, governance\n\nFrom memes to meaning — together we do more! 💜",
   "what is the roadmap": "🗺️ The roadmap has 4 phases: Foundation (launch & community), Growth (marketing & partnerships), Impact (first donations & shelter expansion), and Expansion (utility, merch, exchanges, governance). We're just getting started! 🐾",
-  "socials": "🌐 Official $WHATEVER Channels:\n\n🐦 X (Twitter): @tokenwhatever\n✈️ Telegram: t.me/OriginalWHATEVER55\n🚀 Pump.fun: pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\nJoin the pack and be part of the movement! 🐶",
-  "social media": "🌐 Find us at:\n• X: @tokenwhatever\n• Telegram: t.me/OriginalWHATEVER55\n• Pump.fun for trading!\n\nJoin the pack! 🐾",
+  "socials": "🌐 Official $WHATEVER Channels:\n\n🐦 X (Twitter): @tokenwhatever\n✈️ Telegram: t.me/OriginalWHATEVER55\n💬 Discord: discord.gg/rqwadpvq9\n🚀 Pump.fun: pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump\n\nJoin the pack and be part of the movement! 🐶",
+  "social media": "🌐 Find us at:\n• X: @tokenwhatever\n• Telegram: t.me/OriginalWHATEVER55\n• Discord: discord.gg/rqwadpvq9\n• Pump.fun for trading!\n\nJoin the pack! 🐾",
   "telegram": "✈️ Join our Telegram community: t.me/OriginalWHATEVER55\n\nGet real-time updates, community chat, AMAs, and holder announcements! 🐶",
   "twitter": "🐦 Follow us on X: @tokenwhatever (https://x.com/tokenwhatever)\n\nLatest news, raids, alpha, and community vibes! 🐾",
+  "discord": "💬 Join our Discord server: discord.gg/rqwadpvq9\n\nCommunity chat, events, exclusive holder perks and more! 🐾",
   "rug": "🔒 $WHATEVER is designed to be as fair as possible:\n• Fair launch on pump.fun — no pre-sale\n• No hidden taxes\n• No insider dumps\n• Charity structure built in from day one\n\nAlways DYOR (do your own research) — we're just here to do good. 🐾",
   "is it safe": "🔒 $WHATEVER had a fair launch on pump.fun with no pre-sale or insider allocation. That said, all crypto carries risk. The team is building transparently with charity at the core. Always invest only what you can afford to lose. DYOR! 🐾",
   "solana": "⚡ $WHATEVER is built on Solana — the fastest Layer 1 blockchain with near-zero fees and a massive thriving ecosystem. Perfect for a community-driven charity token! 🐾",
@@ -989,7 +1028,7 @@ function getBotReply(input) {
   for(const key in KB) {
     if(lower.includes(key)) return KB[key];
   }
-  return "🤔 Great question! I'm not sure about that specific one. For the latest info, join our Telegram (t.me/OriginalWHATEVER55) or follow us on X (@tokenwhatever). You can also check the sections on this page for full details! 🐾";
+  return "🤔 Great question! I'm not sure about that specific one. For the latest info, join our Discord (discord.gg/rqwadpvq9), Telegram (t.me/OriginalWHATEVER55) or follow us on X (@tokenwhatever). 🐾";
 }
 
 function addMsg(text, type) {
