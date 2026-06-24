@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WhateverCoinDapp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a14; --surface: #12121f; --border: #20203a;
+      --accent: #4f6df5; --accent2: #8b7cf6; --green: #22c55e;
+      --red: #ef4444; --yellow: #f59e0b; --text: #e4e7f5; --muted: #6b7099; --card: #0e0e1c;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,20,.9); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; color: var(--accent2); }
+    .logo span { color: var(--muted); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    #stakingNavBtn {
+      display: none; background: rgba(139,124,246,.15); color: var(--accent2);
+      border: 1px solid rgba(139,124,246,.3); border-radius: 8px;
+      padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    #walletBtn {
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 9px 16px; font-family: 'Space Grotesk', sans-serif; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    #walletBtn:hover { background: #3d56d6; }
+    #walletBtn.connected { background: transparent; border: 1px solid var(--border); color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 11px; }
+
+    .page { display: none; padding: 24px 20px; max-width: 480px; margin: 0 auto; }
+    .page.active { display: block; }
+    #page-home { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 61px); text-align: center; padding: 40px 20px; }
+    #page-home.active { display: flex; }
+
+    .hero-tag { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; border: 1px solid rgba(79,109,245,.3); padding: 4px 12px; border-radius: 20px; background: rgba(79,109,245,.08); }
+    h1 { font-size: clamp(28px, 8vw, 44px); font-weight: 700; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
+    h1 .grad { background: linear-gradient(135deg, #4f6df5, #8b7cf6, #b794f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 340px; margin-bottom: 36px; }
+    .hero-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
+
+    .btn-primary { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; width: 100%; }
+    .btn-primary:hover { background: #3d56d6; }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-secondary { background: transparent; color: var(--accent2); border: 1px solid rgba(139,124,246,.4); border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: border-color .2s, background .2s; }
+    .btn-secondary:hover { border-color: var(--accent2); background: rgba(139,124,246,.08); }
+    .btn-ghost { background: transparent; color: var(--muted); border: none; font-family: 'Space Grotesk', sans-serif; font-size: 14px; cursor: pointer; padding: 8px 0; text-decoration: underline; text-underline-offset: 3px; }
+    .btn-ghost:hover { color: var(--text); }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 4px; }
+    .page-header p { color: var(--muted); font-size: 14px; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; transition: border-color .2s; }
+    .card.clickable { cursor: pointer; }
+    .card.clickable:hover { border-color: var(--accent); }
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .field input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
+    .field input:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--muted); }
+
+    .step-indicator { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+    .step { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .step.done { background: var(--green); color: #fff; }
+    .step.active { background: var(--accent); color: #fff; }
+    .step.pending { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+    .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
+    .step-line.done { background: var(--green); }
+
+    .invite-box { background: rgba(79,109,245,.1); border: 1px solid rgba(79,109,245,.3); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .invite-code { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent2); flex: 1; letter-spacing: 3px; }
+    .copy-btn { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+
+    .teammate-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .teammate-item:last-child { border-bottom: none; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .teammate-info { flex: 1; min-width: 0; }
+    .teammate-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .teammate-wallet { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+    .role-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
+    .role-captain { background: rgba(139,124,246,.2); color: var(--accent2); }
+    .role-member { background: rgba(34,197,94,.15); color: var(--green); }
+
+    .stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
+    .stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+    .stat-num { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent2); }
+    .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .section-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 14px; }
+    .empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+    .link-row { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+    .link-text { flex: 1; padding: 10px 12px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .link-copy { background: var(--accent); color: #fff; border: none; padding: 10px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+
+    .verified-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 20px; }
+
+    /* ── STAKING STYLES ── */
+    .staking-hero {
+      background: linear-gradient(135deg, rgba(79,109,245,.15), rgba(139,124,246,.15));
+      border: 1px solid rgba(139,124,246,.25); border-radius: 16px;
+      padding: 20px; margin-bottom: 20px; text-align: center;
+    }
+    .staking-balance { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4f6df5, #8b7cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .staking-balance-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .nft-card {
+      background: linear-gradient(135deg, rgba(79,109,245,.1), rgba(139,124,246,.1));
+      border: 1px solid rgba(139,124,246,.3); border-radius: 12px; padding: 16px;
+      display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+    }
+    .nft-icon { font-size: 36px; flex-shrink: 0; }
+    .nft-info { flex: 1; }
+    .nft-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .nft-roi { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent2); }
+    .nft-roi-label { font-size: 11px; color: var(--muted); }
+
+    .no-nft-card {
+      background: rgba(239,68,68,.05); border: 1px solid rgba(239,68,68,.2);
+      border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 16px;
+    }
+    .no-nft-card .icon { font-size: 32px; margin-bottom: 8px; }
+    .no-nft-card p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .yield-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .yield-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .yield-row:last-child { border-bottom: none; }
+    .yield-label { font-size: 13px; color: var(--muted); }
+    .yield-value { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text); }
+    .yield-value.highlight { color: var(--green); }
+
+    .forfeit-warning {
+      background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.3);
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .forfeit-warning .warn-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .forfeit-warning p { font-size: 13px; color: var(--yellow); line-height: 1.5; }
+
+    .gate-warning {
+      background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.2);
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;
+      font-size: 13px; color: var(--red); line-height: 1.5; text-align: center;
+    }
+
+    .compound-toggle { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+    .compound-label { font-size: 14px; font-weight: 600; }
+    .compound-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; cursor: pointer; transition: background .2s; }
+    .toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
+    .toggle input:checked + .toggle-slider { background: var(--accent); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+    .loading-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .loading-state .spinner { border-top-color: var(--accent2); border-color: rgba(139,124,246,.3); width: 24px; height: 24px; margin: 0 auto 12px; display: block; }
+
+    /* BOTTOM NAV for dashboards */
+    .bottom-nav { display: flex; gap: 0; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,20,.95); backdrop-filter: blur(12px); z-index: 99; }
+    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; font-size: 10px; font-weight: 600; color: var(--muted); background: transparent; border: none; cursor: pointer; transition: color .2s; text-transform: uppercase; letter-spacing: .5px; }
+    .nav-btn .nav-icon { font-size: 20px; }
+    .nav-btn.active { color: var(--accent2); }
+    .has-nav { padding-bottom: 70px; }
+
+    #toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 500; transition: transform .3s ease; z-index: 999; white-space: nowrap; max-width: 90vw; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: var(--green); color: var(--green); }
+    #toast.error { border-color: var(--red); color: var(--red); }
+
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div class="logo">Whatever<span>Coin</span>Dapp</div>
+    <div class="header-right">
+      <button id="stakingNavBtn">⚡ Staking</button>
+      <button id="walletBtn" style="display:none;">Connect Wallet</button>
+    </div>
+  </header>
+
+  <!-- LANDING -->
+  <div id="page-home" class="page active">
+    <div class="hero-tag">Solana · On-Chain Teams</div>
+    <h1>Form your<br><span class="grad">squad.</span></h1>
+    <p class="hero-sub">Verify your email, connect your wallet, and build your team for on-chain staking.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" id="getStartedBtn">Get Started</button>
+    </div>
+  </div>
+
+  <!-- EMAIL + PASSWORD -->
+  <div id="page-email" class="page">
+    <div class="step-indicator">
+      <div class="step active">1</div>
+      <div class="step-line"></div>
+      <div class="step pending">2</div>
+    </div>
+    <div class="page-header">
+      <h2 id="emailPageTitle">Create your account</h2>
+      <p id="emailPageSubtitle">Sign up with your email to verify it's really you.</p>
+    </div>
+    <div class="field"><label>Email Address</label><input type="email" id="emailInput" placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input type="password" id="passwordInput" placeholder="At least 6 characters"/></div>
+    <button class="btn-primary" id="emailAuthBtn">Sign Up</button>
+    <br/><br/>
+    <button class="btn-ghost" id="toggleAuthModeBtn">Already have an account? Log in</button>
+    <br/>
+    <button class="btn-ghost" id="emailBackBtn">← Back</button>
+  </div>
+
+  <!-- CONNECT WALLET -->
+  <div id="page-connect-wallet" class="page">
+    <div class="step-indicator">
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">2</div>
+    </div>
+    <div class="page-header">
+      <h2>Connect your wallet</h2>
+      <p>Last step — link your Solana wallet to your verified account.</p>
+    </div>
+    <div class="verified-badge">✓ Email verified</div>
+    <button class="btn-primary" id="connectWalletBtn">Connect Phantom Wallet</button>
+  </div>
+
+  <!-- CHOOSE ROLE -->
+  <div id="page-choose" class="page">
+    <div class="page-header">
+      <h2>What's your role?</h2>
+      <p>Start a team or join one with an invite code.</p>
+    </div>
+    <div class="card clickable" id="becomeCaptainCard">
+      <div style="font-size:28px;margin-bottom:8px;">🎖️</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Become a Captain</div>
+      <div style="color:var(--muted);font-size:13px;">Create a new team, get an invite code, and recruit your squad.</div>
+    </div>
+    <div class="card clickable" id="joinTeamCard">
+      <div style="font-size:28px;margin-bottom:8px;">🤝</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Join a Team</div>
+      <div style="color:var(--muted);font-size:13px;">Have an invite code or link? Enter it to join your captain's squad.</div>
+    </div>
+  </div>
+
+  <!-- REGISTER CAPTAIN -->
+  <div id="page-register-captain" class="page">
+    <div class="page-header">
+      <h2>Create your team</h2>
+      <p>You'll be the captain. Share your invite code to recruit.</p>
+    </div>
+    <div class="field"><label>Team Name</label><input type="text" id="teamName" placeholder="e.g. Alpha Squad" maxlength="30"/></div>
+    <div class="field"><label>Your Username</label><input type="text" id="captainUsername" placeholder="e.g. Maverick" maxlength="20"/></div>
+    <button class="btn-primary" id="createTeamBtn">Create Team</button>
+    <br/><br/>
+    <button class="btn-ghost" id="captainBackBtn">← Back</button>
+  </div>
+
+  <!-- JOIN TEAM -->
+  <div id="page-join" class="page">
+    <div class="page-header">
+      <h2>Join a team</h2>
+      <p>Enter the 6-character invite code from your captain.</p>
+    </div>
+    <div class="field"><label>Invite Code</label><input type="text" id="inviteInput" placeholder="e.g. XK92PL" maxlength="6" style="text-transform:uppercase;letter-spacing:3px;font-family:'Space Mono',monospace;font-size:18px;"/></div>
+    <div class="field"><label>Your Username</label><input type="text" id="memberUsername" placeholder="e.g. Shadow" maxlength="20"/></div>
+    <button class="btn-primary" id="joinTeamBtn">Join Team</button>
+    <br/><br/>
+    <button class="btn-ghost" id="joinBackBtn">← Back</button>
+  </div>
+
+  <!-- CAPTAIN DASHBOARD -->
+  <div id="page-captain" class="page has-nav">
+    <div class="page-header">
+      <h2 id="dashTeamName">My Team</h2>
+      <p>You're the captain. Share your invite to grow your squad.</p>
+    </div>
+    <div id="captainGateWarning" class="gate-warning" style="display:none;">
+      ⚠️ You need at least 1 SOL worth of $WHATEVER to invite members. Top up your wallet to unlock invites.
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num" id="memberCount">0</div><div class="stat-label">Members</div></div>
+      <div class="stat"><div class="stat-num" style="font-size:14px;color:var(--green);">ACTIVE</div><div class="stat-label">Status</div></div>
+    </div>
+    <div class="section-label">Invite Code</div>
+    <div class="invite-box">
+      <div class="invite-code" id="displayCode">——</div>
+      <button class="copy-btn" id="copyCodeBtn">Copy</button>
+    </div>
+    <div class="section-label">Invite Link</div>
+    <div class="link-row">
+      <div class="link-text" id="inviteLink">—</div>
+      <button class="link-copy" id="copyLinkBtn">Copy Link</button>
+    </div>
+    <div class="section-label">Squad</div>
+    <div id="teammateList"><div class="empty"><div class="empty-icon">👥</div>No teammates yet. Share your invite code!</div></div>
+    <div class="bottom-nav">
+      <button class="nav-btn active" id="captainTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
+      <button class="nav-btn" id="captainStakingNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+    </div>
+  </div>
+
+  <!-- MEMBER DASHBOARD -->
+  <div id="page-member" class="page has-nav">
+    <div class="page-header">
+      <h2 id="memberTeamName">My Team</h2>
+      <p>You're part of this squad.</p>
+    </div>
+    <div class="card" style="cursor:default;">
+      <div class="section-label" style="margin-bottom:8px;">Your Captain</div>
+      <div class="teammate-item" style="border:none;padding:0;">
+        <div class="avatar" id="captainAvatar">C</div>
+        <div class="teammate-info">
+          <div class="teammate-name" id="captainName">—</div>
+          <div class="teammate-wallet" id="captainWallet">—</div>
+        </div>
+        <div class="role-badge role-captain">Captain</div>
+      </div>
+    </div>
+    <div class="section-label">Teammates</div>
+    <div id="memberTeammateList"><div class="empty"><div class="empty-icon">👥</div>No other teammates yet.</div></div>
+    <div class="bottom-nav">
+      <button class="nav-btn active" id="memberTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
+      <button class="nav-btn" id="memberStakingNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+    </div>
+  </div>
+
+  <!-- STAKING DASHBOARD -->
+  <div id="page-staking" class="page has-nav">
+    <div class="page-header">
+      <h2>⚡ Staking</h2>
+      <p>Your $WHATEVER mining overview.</p>
+    </div>
+
+    <!-- Loading state -->
+    <div id="stakingLoading" class="loading-state">
+      <span class="spinner" style="border-top-color:var(--accent2);border-color:rgba(139,124,246,.3);width:24px;height:24px;display:inline-block;margin-bottom:12px;"></span>
+      <div>Checking your wallet...</div>
+    </div>
+
+    <!-- Main staking content (hidden until loaded) -->
+    <div id="stakingContent" style="display:none;">
+
+      <!-- Balance hero -->
+      <div class="staking-hero">
+        <div class="staking-balance" id="stakingBalance">—</div>
+        <div class="staking-balance-label">$WHATEVER in wallet</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);">≈ <span id="solEquivalent">—</span> SOL equivalent</div>
+      </div>
+
+      <!-- NFT status -->
+      <div class="section-label">Mining NFT</div>
+      <div id="nftCardSlot"></div>
+
+      <!-- Yield breakdown (only shown if NFT found) -->
+      <div id="yieldSection" style="display:none;">
+        <div class="section-label">Monthly Yield Breakdown</div>
+        <div class="yield-breakdown">
+          <div class="yield-row">
+            <span class="yield-label">Yearly ROI</span>
+            <span class="yield-value" id="yearlyRoi">—</span>
+          </div>
+          <div class="yield-row">
+            <span class="yield-label">Monthly Rate</span>
+            <span class="yield-value" id="monthlyRate">—</span>
+          </div>
+          <div class="yield-row">
+            <span class="yield-label">Est. Monthly Yield</span>
+            <span class="yield-value highlight" id="monthlyYield">—</span>
+          </div>
+          <div class="yield-row">
+            <span class="yield-label">Next Month Base</span>
+            <span class="yield-value highlight" id="nextMonthBase">—</span>
+          </div>
+        </div>
+
+        <!-- Compounding toggle -->
+        <div class="compound-toggle">
+          <div>
+            <div class="compound-label">Compounding</div>
+            <div class="compound-sub">Add yield to base each month</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="compoundToggle" checked/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- Forfeit warning -->
+        <div class="forfeit-warning" id="forfeitWarning" style="display:none;">
+          <div class="warn-icon">⚠️</div>
+          <p>Selling more than 10% of your staked tokens will forfeit your staking rewards until the next monthly renewal.</p>
+        </div>
+
+        <!-- Forfeit threshold info -->
+        <div class="yield-breakdown">
+          <div class="yield-row">
+            <span class="yield-label">Safe sell limit (10%)</span>
+            <span class="yield-value" id="safeLimit">—</span>
+          </div>
+          <div class="yield-row">
+            <span class="yield-label">Staking renews</span>
+            <span class="yield-value">Monthly</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <button class="nav-btn" id="stakingTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
+      <button class="nav-btn active" id="stakingActiveNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp }                     from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc,
+           collection, onSnapshot,
+           query, where, getDocs }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword,
+           signInWithEmailAndPassword }         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+  // ================================================================
+  // ✅ $WHATEVER token address set
+  // ⚠️  NFT_COLLECTION — swap when Alex delivers it
+  const WHATEVER_MINT    = 'AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump';
+  const NFT_COLLECTION   = 'MINING_NFT_COLLECTION_ADDRESS_HERE';
+  const SOLANA_RPC       = 'https://api.mainnet-beta.solana.com';
+  // ================================================================
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDW5aBwPQxLZmzWYfYsZnxxNlaBHuEsBTM",
+    authDomain:        "whatevercoindapp.firebaseapp.com",
+    projectId:         "whatevercoindapp",
+    storageBucket:     "whatevercoindapp.firebasestorage.app",
+    messagingSenderId: "447107415470",
+    appId:             "1:447107245470:web:d929f3811d91b97cbadc3f",
+    measurementId:     "G-XV9L57PTRL"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const db    = getFirestore(fbApp);
+  const auth  = getAuth(fbApp);
+
+  /* ── STATE ── */
+  let walletAddress  = null;
+  let currentTeam    = null;
+  let verifiedEmail  = null;
+  let unsubscribe    = null;
+  let isSignUpMode   = true;
+  let userRole       = null; // 'captain' or 'member'
+  let stakingData    = null;
+
+  /* ── TOAST ── */
+  function toast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    setTimeout(() => t.className = '', 3500);
+  }
+
+  /* ── ROUTING ── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  /* ── TOGGLE SIGNUP/LOGIN ── */
+  function toggleAuthMode() {
+    isSignUpMode = !isSignUpMode;
+    document.getElementById('emailPageTitle').textContent    = isSignUpMode ? 'Create your account' : 'Welcome back';
+    document.getElementById('emailPageSubtitle').textContent = isSignUpMode ? "Sign up with your email to verify it's really you." : 'Log in with your email and password.';
+    document.getElementById('emailAuthBtn').textContent      = isSignUpMode ? 'Sign Up' : 'Log In';
+    document.getElementById('toggleAuthModeBtn').textContent = isSignUpMode ? 'Already have an account? Log in' : "Don't have an account? Sign up";
+  }
+
+  /* ── EMAIL/PASSWORD AUTH ── */
+  async function handleEmailAuth() {
+    const email    = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    if (!email.includes('@') || !email.includes('.')) { toast('Enter a valid email address.', 'error'); return; }
+    if (password.length < 6) { toast('Password must be at least 6 characters.', 'error'); return; }
+
+    const btn = document.getElementById('emailAuthBtn');
+    btn.innerHTML = `<span class="spinner"></span>${isSignUpMode ? 'Creating account...' : 'Logging in...'}`;
+    btn.disabled = true;
+
+    try {
+      let result;
+      if (isSignUpMode) {
+        result = await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        result = await signInWithEmailAndPassword(auth, email, password);
+      }
+      verifiedEmail = result.user.email;
+      toast(isSignUpMode ? 'Account created! ✓' : 'Logged in! ✓');
+      showPage('page-connect-wallet');
+      document.getElementById('walletBtn').style.display = 'block';
+    } catch(e) {
+      let msg = e.message || 'Authentication failed';
+      if (e.code === 'auth/email-already-in-use') msg = 'Email already registered. Try logging in instead.';
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Wrong password.';
+      if (e.code === 'auth/user-not-found') msg = 'No account found. Try signing up instead.';
+      toast(msg, 'error');
+    } finally {
+      btn.innerHTML = isSignUpMode ? 'Sign Up' : 'Log In';
+      btn.disabled = false;
+    }
+  }
+
+  /* ── CONNECT WALLET ── */
+  async function connectWallet() {
+    try {
+      const provider = window.phantom?.solana ?? window.solana;
+      if (!provider?.isPhantom) { toast('Open this page inside Phantom browser.', 'error'); return; }
+      const res = await provider.connect();
+      walletAddress = res.publicKey.toString();
+      const btn = document.getElementById('walletBtn');
+      btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+      btn.classList.add('connected');
+      if (verifiedEmail) {
+        await setDoc(doc(db, 'emailIndex', verifiedEmail.replace(/[.#$\[\]]/g, '_')), {
+          wallet: walletAddress, email: verifiedEmail, verifiedAt: Date.now()
+        });
+      }
+      toast('Wallet connected!');
+      await checkExistingUser();
+    } catch(e) {
+      toast('Error: ' + (e.message || 'Connection failed'), 'error');
+    }
+  }
+
+  /* ── CHECK EXISTING USER ── */
+  async function checkExistingUser() {
+    try {
+      const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
+      if (captainDoc.exists()) {
+        currentTeam = captainDoc.data();
+        userRole = 'captain';
+        loadCaptainDashboard(); return;
+      }
+      const memberDoc = await getDoc(doc(db, 'members', walletAddress));
+      if (memberDoc.exists()) {
+        const memberData = memberDoc.data();
+        const teamDoc = await getDoc(doc(db, 'teams', memberData.captainWallet));
+        if (teamDoc.exists()) {
+          currentTeam = teamDoc.data();
+          userRole = 'member';
+          loadMemberDashboard(memberData); return;
+        }
+      }
+      showPage('page-choose');
+    } catch(e) {
+      toast('Error: ' + (e.message || 'Firebase failed'), 'error');
+    }
+  }
+
+  /* ── SOLANA RPC HELPER ── */
+  async function rpcCall(method, params) {
+    const res = await fetch(SOLANA_RPC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+    });
+    const data = await res.json();
+    return data.result;
+  }
+
+  /* ── GET $WHATEVER BALANCE ── */
+  async function getWhateverBalance(wallet) {
+    try {
+      const result = await rpcCall('getTokenAccountsByOwner', [
+        wallet,
+        { mint: WHATEVER_MINT },
+        { encoding: 'jsonParsed' }
+      ]);
+      if (!result?.value?.length) return 0;
+      const amount = result.value[0].account.data.parsed.info.tokenAmount.uiAmount;
+      return amount || 0;
+    } catch(e) {
+      return 0;
+    }
+  }
+
+  /* ── GET SOL PRICE (for captain gate check) ── */
+  async function getSolPrice() {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+      const data = await res.json();
+      return data.solana.usd;
+    } catch(e) {
+      return 150; // fallback price
+    }
+  }
+
+  /* ── GET WHATEVER TOKEN PRICE ── */
+  async function getWhateverPrice() {
+    try {
+      const res  = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${WHATEVER_MINT}`);
+      const data = await res.json();
+      return parseFloat(data.pairs?.[0]?.priceUsd || 0);
+    } catch(e) {
+      return 0;
+    }
+  }
+
+  /* ── CHECK MINING NFT ── */
+  async function getMiningNFT(wallet) {
+    try {
+      const result = await rpcCall('getTokenAccountsByOwner', [
+        wallet,
+        { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+        { encoding: 'jsonParsed' }
+      ]);
+      if (!result?.value?.length) return null;
+
+      // Find NFTs (amount = 1, decimals = 0)
+      const nfts = result.value.filter(a => {
+        const info = a.account.data.parsed.info;
+        return info.tokenAmount.amount === '1' && info.tokenAmount.decimals === 0;
+      });
+
+      if (!nfts.length) return null;
+
+      // Check each NFT's metadata for our collection
+      // Once Alex provides NFT collection address + IPFS metadata, we check here
+      // For now return null until NFT_COLLECTION address is set
+      if (NFT_COLLECTION === 'MINING_NFT_COLLECTION_ADDRESS_HERE') return null;
+
+      // TODO: parse IPFS metadata to get ROI % once collection is live
+      // Example return format:
+      // return { name: 'Bronze Miner', roiYearly: 10, image: '...' };
+      return null;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  /* ── CHECK CAPTAIN GATE (1 SOL worth of $WHATEVER) ── */
+  async function checkCaptainGate(balance) {
+    try {
+      if (WHATEVER_MINT === 'WHATEVER_MINT_ADDRESS_HERE') return true; // skip check until live
+      const solPrice      = await getSolPrice();
+      const tokenPrice    = await getWhateverPrice();
+      if (tokenPrice === 0) return true; // skip check if price not available
+      const oneSolInUsd   = solPrice;
+      const tokenValueUsd = balance * tokenPrice;
+      return tokenValueUsd >= oneSolInUsd;
+    } catch(e) {
+      return true; // allow if check fails
+    }
+  }
+
+  /* ── LOAD STAKING PAGE ── */
+  async function loadStakingPage() {
+    showPage('page-staking');
+    updateStakingNav();
+
+    document.getElementById('stakingLoading').style.display = 'block';
+    document.getElementById('stakingContent').style.display = 'none';
+
+    try {
+      // Fetch balance and NFT in parallel
+      const [balance, nft] = await Promise.all([
+        getWhateverBalance(walletAddress),
+        getMiningNFT(walletAddress)
+      ]);
+
+      stakingData = { balance, nft };
+
+      // Update balance display
+      document.getElementById('stakingBalance').textContent = balance.toLocaleString() + ' $WHATEVER';
+      const tokenPrice = await getWhateverPrice();
+      const solPrice   = await getSolPrice();
+      if (tokenPrice > 0 && solPrice > 0) {
+        const usdValue  = balance * tokenPrice;
+        const solValue  = usdValue / solPrice;
+        document.getElementById('solEquivalent').textContent = solValue.toFixed(4) + ' SOL';
+      } else {
+        document.getElementById('solEquivalent').textContent = 'Price loading...';
+      }
+
+      // Update safe sell limit
+      document.getElementById('safeLimit').textContent = (balance * 0.9).toLocaleString() + ' $WHATEVER';
+
+      // NFT card
+      const nftSlot = document.getElementById('nftCardSlot');
+      if (nft) {
+        const roiMonthly = nft.roiYearly / 12;
+        const monthlyYield = balance * (roiMonthly / 100);
+        const nextBase     = balance + monthlyYield;
+
+        nftSlot.innerHTML = `
+          <div class="nft-card">
+            <div class="nft-icon">💎</div>
+            <div class="nft-info">
+              <div class="nft-name">${nft.name}</div>
+              <div class="nft-roi">${nft.roiYearly}%</div>
+              <div class="nft-roi-label">Yearly ROI</div>
+            </div>
+          </div>`;
+
+        document.getElementById('yearlyRoi').textContent    = nft.roiYearly + '%';
+        document.getElementById('monthlyRate').textContent  = roiMonthly.toFixed(4) + '%';
+        document.getElementById('monthlyYield').textContent = monthlyYield.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' $WHATEVER';
+        document.getElementById('nextMonthBase').textContent = nextBase.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' $WHATEVER';
+
+        document.getElementById('yieldSection').style.display = 'block';
+        document.getElementById('forfeitWarning').style.display = 'flex';
+      } else {
+        nftSlot.innerHTML = `
+          <div class="no-nft-card">
+            <div class="icon">🔒</div>
+            <p>No Mining NFT found in this wallet.<br/>You need a Mining NFT to earn staking rewards.</p>
+            ${NFT_COLLECTION === 'MINING_NFT_COLLECTION_ADDRESS_HERE' ? '<p style="margin-top:8px;font-size:11px;color:var(--muted);">NFT collection coming soon.</p>' : ''}
+          </div>`;
+        document.getElementById('yieldSection').style.display = 'none';
+      }
+
+      document.getElementById('stakingLoading').style.display = 'none';
+      document.getElementById('stakingContent').style.display = 'block';
+
+    } catch(e) {
+      toast('Error loading staking data.', 'error');
+      document.getElementById('stakingLoading').style.display = 'none';
+    }
+  }
+
+  /* ── COMPOUNDING TOGGLE ── */
+  function handleCompoundToggle() {
+    if (!stakingData?.nft || !stakingData?.balance) return;
+    const isOn         = document.getElementById('compoundToggle').checked;
+    const roiMonthly   = stakingData.nft.roiYearly / 12;
+    const monthlyYield = stakingData.balance * (roiMonthly / 100);
+    const nextBase     = isOn ? stakingData.balance + monthlyYield : stakingData.balance;
+    document.getElementById('nextMonthBase').textContent = nextBase.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' $WHATEVER';
+  }
+
+  /* ── UPDATE BOTTOM NAV STAKING TAB ── */
+  function updateStakingNav() {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const page = document.querySelector('.page.active')?.id;
+    if (page === 'page-staking') {
+      document.getElementById('stakingActiveNavBtn')?.classList.add('active');
+    } else if (page === 'page-captain') {
+      document.getElementById('captainTeamNavBtn')?.classList.add('active');
+    } else if (page === 'page-member') {
+      document.getElementById('memberTeamNavBtn')?.classList.add('active');
+    }
+  }
+
+  /* ── CREATE TEAM ── */
+  async function createTeam() {
+    const name     = document.getElementById('teamName').value.trim();
+    const username = document.getElementById('captainUsername').value.trim();
+    if (!name)     { toast('Enter a team name.', 'error'); return; }
+    if (!username) { toast('Enter a username.', 'error'); return; }
+
+    const btn = document.getElementById('createTeamBtn');
+    btn.innerHTML = '<span class="spinner"></span>Creating...';
+    btn.disabled = true;
+
+    try {
+      const code = Math.random().toString(36).substring(2,8).toUpperCase();
+      const teamData = { name, captainWallet: walletAddress, captainUsername: username, captainEmail: verifiedEmail, inviteCode: code, createdAt: Date.now() };
+      await setDoc(doc(db, 'teams', walletAddress), teamData);
+      await setDoc(doc(db, 'members', walletAddress), { wallet: walletAddress, username, role: 'captain', email: verifiedEmail, captainWallet: walletAddress, joinedAt: Date.now() });
+      currentTeam = teamData;
+      userRole = 'captain';
+      toast('Team created! 🎉');
+      loadCaptainDashboard();
+    } catch(e) {
+      toast('Error creating team.', 'error');
+    } finally {
+      btn.innerHTML = 'Create Team'; btn.disabled = false;
+    }
+  }
+
+  /* ── JOIN TEAM ── */
+  async function joinTeam() {
+    const code     = document.getElementById('inviteInput').value.trim().toUpperCase();
+    const username = document.getElementById('memberUsername').value.trim();
+    if (code.length !== 6) { toast('Enter a valid 6-character code.', 'error'); return; }
+    if (!username)         { toast('Enter a username.', 'error'); return; }
+
+    const btn = document.getElementById('joinTeamBtn');
+    btn.innerHTML = '<span class="spinner"></span>Joining...';
+    btn.disabled = true;
+
+    try {
+      const snap = await getDocs(query(collection(db, 'teams'), where('inviteCode', '==', code)));
+      if (snap.empty) { toast('Invalid invite code.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
+      const teamData = snap.docs[0].data();
+      const existing = await getDoc(doc(db, 'members', walletAddress));
+      if (existing.exists()) { toast('You already belong to a team.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
+      await setDoc(doc(db, 'members', walletAddress), { wallet: walletAddress, username, role: 'member', email: verifiedEmail, captainWallet: teamData.captainWallet, joinedAt: Date.now() });
+      currentTeam = teamData;
+      userRole = 'member';
+      toast(`Joined ${teamData.name}! 🤝`);
+      loadMemberDashboard({ wallet: walletAddress, username, role: 'member', captainWallet: teamData.captainWallet });
+    } catch(e) {
+      toast('Error joining team.', 'error');
+    } finally {
+      btn.innerHTML = 'Join Team'; btn.disabled = false;
+    }
+  }
+
+  /* ── CAPTAIN DASHBOARD ── */
+  async function loadCaptainDashboard() {
+    showPage('page-captain');
+    document.getElementById('dashTeamName').textContent = currentTeam.name;
+    document.getElementById('displayCode').textContent  = currentTeam.inviteCode;
+    const link = `${location.href.split('?')[0]}?join=${currentTeam.inviteCode}`;
+    document.getElementById('inviteLink').textContent = link;
+    document.getElementById('stakingNavBtn').style.display = 'block';
+
+    // Captain gate check
+    const balance  = await getWhateverBalance(walletAddress);
+    const canInvite = await checkCaptainGate(balance);
+    document.getElementById('captainGateWarning').style.display = canInvite ? 'none' : 'block';
+
+    if (unsubscribe) unsubscribe();
+    unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', walletAddress)), snap => {
+      const members = snap.docs.map(d => d.data()).filter(m => m.role !== 'captain');
+      document.getElementById('memberCount').textContent = members.length;
+      renderTeammateList('teammateList', members);
+    });
+  }
+
+  /* ── MEMBER DASHBOARD ── */
+  function loadMemberDashboard(memberData) {
+    showPage('page-member');
+    document.getElementById('memberTeamName').textContent = currentTeam.name;
+    document.getElementById('captainName').textContent    = currentTeam.captainUsername;
+    document.getElementById('captainWallet').textContent  = currentTeam.captainWallet.slice(0,6) + '...' + currentTeam.captainWallet.slice(-4);
+    document.getElementById('captainAvatar').textContent  = currentTeam.captainUsername[0].toUpperCase();
+    document.getElementById('stakingNavBtn').style.display = 'block';
+
+    if (unsubscribe) unsubscribe();
+    unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', currentTeam.captainWallet)), snap => {
+      const others = snap.docs.map(d => d.data()).filter(m => m.wallet !== walletAddress && m.role !== 'captain');
+      renderTeammateList('memberTeammateList', others);
+    });
+  }
+
+  /* ── RENDER TEAMMATES ── */
+  function renderTeammateList(containerId, members) {
+    const el = document.getElementById(containerId);
+    if (!members.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teammates yet.</div>'; return; }
+    el.innerHTML = members.map(m => `
+      <div class="teammate-item">
+        <div class="avatar">${m.username[0].toUpperCase()}</div>
+        <div class="teammate-info">
+          <div class="teammate-name">${m.username}</div>
+          <div class="teammate-wallet">${m.wallet.slice(0,6)}...${m.wallet.slice(-4)}</div>
+        </div>
+        <div class="role-badge role-member">Member</div>
+      </div>`).join('');
+  }
+
+  /* ── COPY HELPERS ── */
+  function copyCode() { navigator.clipboard.writeText(currentTeam?.inviteCode || ''); toast('Invite code copied!'); }
+  function copyLink() { navigator.clipboard.writeText(`${location.href.split('?')[0]}?join=${currentTeam?.inviteCode}`); toast('Invite link copied!'); }
+
+  /* ── WIRE ALL BUTTONS ── */
+  document.getElementById('getStartedBtn').addEventListener('click', () => showPage('page-email'));
+  document.getElementById('emailBackBtn').addEventListener('click', () => showPage('page-home'));
+  document.getElementById('toggleAuthModeBtn').addEventListener('click', toggleAuthMode);
+  document.getElementById('emailAuthBtn').addEventListener('click', handleEmailAuth);
+  document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+  document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
+  document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
+  document.getElementById('captainBackBtn').addEventListener('click', () => showPage('page-choose'));
+  document.getElementById('joinBackBtn').addEventListener('click', () => showPage('page-choose'));
+  document.getElementById('createTeamBtn').addEventListener('click', createTeam);
+  document.getElementById('joinTeamBtn').addEventListener('click', joinTeam);
+  document.getElementById('copyCodeBtn').addEventListener('click', copyCode);
+  document.getElementById('copyLinkBtn').addEventListener('click', copyLink);
+  document.getElementById('stakingNavBtn').addEventListener('click', loadStakingPage);
+  document.getElementById('compoundToggle').addEventListener('change', handleCompoundToggle);
+
+  // Bottom nav buttons
+  document.getElementById('captainTeamNavBtn').addEventListener('click', () => { showPage('page-captain'); updateStakingNav(); });
+  document.getElementById('captainStakingNavBtn').addEventListener('click', loadStakingPage);
+  document.getElementById('memberTeamNavBtn').addEventListener('click', () => { showPage('page-member'); updateStakingNav(); });
+  document.getElementById('memberStakingNavBtn').addEventListener('click', loadStakingPage);
+  document.getElementById('stakingTeamNavBtn').addEventListener('click', () => {
+    if (userRole === 'captain') { showPage('page-captain'); } else { showPage('page-member'); }
+    updateStakingNav();
+  });
+
+  /* ── AUTO JOIN FROM URL ── */
+  const urlCode = new URLSearchParams(location.search).get('join');
+  if (urlCode) document.getElementById('inviteInput').value = urlCode.toUpperCase();
+
+  /* ── AUTO RECONNECT ── */
+  (async () => {
+    const provider = window.phantom?.solana ?? window.solana;
+    if (provider?.isPhantom) {
+      try {
+        const res = await provider.connect({ onlyIfTrusted: true });
+        walletAddress = res.publicKey.toString();
+        const btn = document.getElementById('walletBtn');
+        btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+        btn.classList.add('connected');
+        btn.style.display = 'block';
+        await checkExistingUser();
+      } catch(_) {}
+    }
+  })();
+
+</script>
+</body>
+</html>
