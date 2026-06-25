@@ -80,6 +80,15 @@
       text-transform: uppercase;
     }
     .nav-links a:hover { color: var(--blue); }
+    .nav-dapp {
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      color: #000 !important; font-weight: 700 !important;
+      padding: 0.45rem 1.1rem; border-radius: 50px;
+      font-family: var(--font-h) !important; font-size: 0.75rem !important;
+      box-shadow: 0 0 16px var(--glow-p);
+      transition: box-shadow 0.3s, transform 0.2s !important;
+    }
+    .nav-dapp:hover { box-shadow: 0 0 28px var(--glow-p), 0 0 28px var(--glow-b); transform: scale(1.05); }
     .nav-buy {
       background: linear-gradient(90deg, var(--blue), var(--purple));
       color: #000 !important; font-weight: 700 !important;
@@ -590,6 +599,7 @@
     <li><a href="#tokenomics">Tokenomics</a></li>
     <li><a href="#contract">Contract</a></li>
     <li><a href="#community">Community</a></li>
+    <li><a href="dapp/index.html" class="nav-dapp">⚡ LAUNCH DApp</a></li>
     <li><a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" class="nav-buy">BUY NOW</a></li>
   </ul>
   <button class="hamburger" id="hamburger" aria-label="Open menu">
@@ -605,6 +615,7 @@
   <a href="#tokenomics" onclick="closeMobile()">Tokenomics</a>
   <a href="#contract" onclick="closeMobile()">Contract</a>
   <a href="#community" onclick="closeMobile()">Community</a>
+  <a href="dapp/index.html" style="color:var(--cyan)">⚡ LAUNCH DApp</a>
   <a href="https://pump.fun/coin/AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump" target="_blank" rel="noopener" style="color:var(--blue)">🚀 BUY $WHATEVER</a>
 </div>
 
