@@ -237,6 +237,10 @@
     </div>
     <div class="verified-badge">✓ Email verified</div>
     <button class="btn-primary" id="connectWalletBtn">Connect Phantom Wallet</button>
+    <div style="margin-top:16px;padding:14px;background:rgba(79,109,245,.08);border:1px solid rgba(79,109,245,.2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center;">
+      📱 <strong style="color:var(--text);">iOS users:</strong> Tapping the button will open this page inside Phantom's browser automatically.<br/>
+      🤖 <strong style="color:var(--text);">Android users:</strong> Open this page inside Phantom's built-in browser tab.
+    </div>
   </div>
 
   <!-- CHOOSE ROLE -->
@@ -529,25 +533,75 @@
     }
   }
 
+  /* ── DETECT PLATFORM ── */
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  function getProvider() {
+    // Try all known Phantom provider locations
+    if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
+    if (window.solana?.isPhantom)          return window.solana;
+    if (window.phantom?.ethereum)          return null; // wrong chain
+    return null;
+  }
+
+  function isInPhantomBrowser() {
+    return !!getProvider();
+  }
+
+  function openInPhantom() {
+    const url     = encodeURIComponent(window.location.href);
+    const origin  = encodeURIComponent(window.location.origin);
+    const deepLink = `https://phantom.app/ul/browse/${url}?ref=${origin}`;
+    toast('Opening in Phantom browser...', 'success');
+    setTimeout(() => { window.location.href = deepLink; }, 800);
+  }
+
   /* ── CONNECT WALLET ── */
   async function connectWallet() {
+    const provider = getProvider();
+
+    // Not inside Phantom at all — redirect
+    if (!provider) {
+      openInPhantom();
+      return;
+    }
+
+    const btn = document.getElementById('connectWalletBtn');
+    btn.innerHTML = '<span class="spinner"></span>Connecting...';
+    btn.disabled = true;
+
     try {
-      const provider = window.phantom?.solana ?? window.solana;
-      if (!provider?.isPhantom) { toast('Open this page inside Phantom browser.', 'error'); return; }
+      // iOS Phantom sometimes needs a small delay before connect
+      if (isIOS()) await new Promise(r => setTimeout(r, 300));
+
       const res = await provider.connect();
       walletAddress = res.publicKey.toString();
-      const btn = document.getElementById('walletBtn');
-      btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
-      btn.classList.add('connected');
+
+      const walletBtn = document.getElementById('walletBtn');
+      walletBtn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+      walletBtn.classList.add('connected');
+
       if (verifiedEmail) {
         await setDoc(doc(db, 'emailIndex', verifiedEmail.replace(/[.#$\[\]]/g, '_')), {
           wallet: walletAddress, email: verifiedEmail, verifiedAt: Date.now()
         });
       }
-      toast('Wallet connected!');
+      toast('Wallet connected! ✓');
       await checkExistingUser();
     } catch(e) {
-      toast('Error: ' + (e.message || 'Connection failed'), 'error');
+      if (e.code === 4001 || e.message?.includes('User rejected')) {
+        toast('Connection cancelled. Tap approve in Phantom.', 'error');
+      } else if (isIOS()) {
+        // iOS sometimes fails on first attempt — suggest retry
+        toast('Connection failed. Close Phantom and try again.', 'error');
+      } else {
+        toast('Error: ' + (e.message || 'Connection failed'), 'error');
+      }
+    } finally {
+      btn.innerHTML = 'Connect Phantom Wallet';
+      btn.disabled = false;
     }
   }
 
@@ -916,8 +970,8 @@
 
   /* ── AUTO RECONNECT ── */
   (async () => {
-    const provider = window.phantom?.solana ?? window.solana;
-    if (provider?.isPhantom) {
+    const provider = getProvider();
+    if (provider) {
       try {
         const res = await provider.connect({ onlyIfTrusted: true });
         walletAddress = res.publicKey.toString();
@@ -926,7 +980,7 @@
         btn.classList.add('connected');
         btn.style.display = 'block';
         await checkExistingUser();
-      } catch(_) {}
+      } catch(_) { /* not trusted yet, fine */ }
     }
   })();
 
