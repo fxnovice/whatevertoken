@@ -210,6 +210,8 @@
       <div class="step active">1</div>
       <div class="step-line"></div>
       <div class="step pending">2</div>
+      <div class="step-line"></div>
+      <div class="step pending">3</div>
     </div>
     <div class="page-header">
       <h2 id="emailPageTitle">Create your account</h2>
@@ -224,12 +226,40 @@
     <button class="btn-ghost" id="emailBackBtn">← Back</button>
   </div>
 
+  <!-- VERIFY EMAIL -->
+  <div id="page-verify-email" class="page">
+    <div class="step-indicator">
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">2</div>
+      <div class="step-line"></div>
+      <div class="step pending">3</div>
+    </div>
+    <div style="text-align:center;font-size:48px;margin-bottom:20px;">📧</div>
+    <div class="page-header" style="text-align:center;">
+      <h2>Check your inbox</h2>
+      <p id="verifySubtitle">We sent a verification link to your email. Tap it then come back here.</p>
+    </div>
+    <div class="card" style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;">
+        📩 Open the email from Firebase and tap <strong style="color:var(--text);">"Verify email address"</strong> — then tap the button below.
+      </div>
+    </div>
+    <button class="btn-primary" id="checkVerifiedBtn">I've Verified My Email ✓</button>
+    <br/><br/>
+    <button class="btn-ghost" id="resendVerifyBtn">Resend verification email</button>
+    <br/>
+    <button class="btn-ghost" id="backToEmailBtn">← Use a different email</button>
+  </div>
+
   <!-- CONNECT WALLET -->
   <div id="page-connect-wallet" class="page">
     <div class="step-indicator">
       <div class="step done">✓</div>
       <div class="step-line done"></div>
-      <div class="step active">2</div>
+      <div class="step done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step active">3</div>
     </div>
     <div class="page-header">
       <h2>Connect your wallet</h2>
@@ -443,7 +473,8 @@
            collection, onSnapshot,
            query, where, getDocs }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword,
-           signInWithEmailAndPassword }         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+           signInWithEmailAndPassword,
+           sendEmailVerification }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   // ================================================================
   // ✅ $WHATEVER token address set
@@ -514,13 +545,25 @@
       let result;
       if (isSignUpMode) {
         result = await createUserWithEmailAndPassword(auth, email, password);
+        // Send verification email
+        await sendEmailVerification(result.user);
+        document.getElementById('verifySubtitle').textContent = `Verification link sent to ${email}. Check your inbox!`;
+        toast('Account created! Check your email. ✓');
+        showPage('page-verify-email');
       } else {
         result = await signInWithEmailAndPassword(auth, email, password);
+        // Check if email is verified
+        if (!result.user.emailVerified) {
+          document.getElementById('verifySubtitle').textContent = `Please verify ${email} first. Check your inbox!`;
+          toast('Please verify your email first.', 'error');
+          showPage('page-verify-email');
+          return;
+        }
+        verifiedEmail = result.user.email;
+        toast('Logged in! ✓');
+        showPage('page-connect-wallet');
+        document.getElementById('walletBtn').style.display = 'block';
       }
-      verifiedEmail = result.user.email;
-      toast(isSignUpMode ? 'Account created! ✓' : 'Logged in! ✓');
-      showPage('page-connect-wallet');
-      document.getElementById('walletBtn').style.display = 'block';
     } catch(e) {
       let msg = e.message || 'Authentication failed';
       if (e.code === 'auth/email-already-in-use') msg = 'Email already registered. Try logging in instead.';
@@ -530,6 +573,43 @@
     } finally {
       btn.innerHTML = isSignUpMode ? 'Sign Up' : 'Log In';
       btn.disabled = false;
+    }
+  }
+
+  /* ── CHECK EMAIL VERIFIED ── */
+  async function checkEmailVerified() {
+    const btn = document.getElementById('checkVerifiedBtn');
+    btn.innerHTML = '<span class="spinner"></span>Checking...';
+    btn.disabled = true;
+    try {
+      const user = auth.currentUser;
+      if (!user) { toast('Session expired. Please sign in again.', 'error'); showPage('page-email'); return; }
+      await user.reload();
+      if (user.emailVerified) {
+        verifiedEmail = user.email;
+        toast('Email verified! ✓');
+        showPage('page-connect-wallet');
+        document.getElementById('walletBtn').style.display = 'block';
+      } else {
+        toast('Not verified yet — tap the link in your email first.', 'error');
+      }
+    } catch(e) {
+      toast('Error checking verification.', 'error');
+    } finally {
+      btn.innerHTML = "I've Verified My Email ✓";
+      btn.disabled = false;
+    }
+  }
+
+  /* ── RESEND VERIFICATION ── */
+  async function resendVerification() {
+    try {
+      const user = auth.currentUser;
+      if (!user) { toast('Session expired. Please sign in again.', 'error'); showPage('page-email'); return; }
+      await sendEmailVerification(user);
+      toast('Verification email resent!');
+    } catch(e) {
+      toast('Error resending: ' + (e.message || 'try again later'), 'error');
     }
   }
 
@@ -608,6 +688,14 @@
   /* ── CHECK EXISTING USER ── */
   async function checkExistingUser() {
     try {
+      // Check if wallet is blocked
+      const blockedDoc = await getDoc(doc(db, 'blockedWallets', walletAddress));
+      if (blockedDoc.exists()) {
+        toast('This wallet has been blocked from the DApp.', 'error');
+        showPage('page-home');
+        return;
+      }
+
       const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
       if (captainDoc.exists()) {
         currentTeam = captainDoc.data();
