@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WhateverCoinDapp — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a14; --surface: #12121f; --border: #20203a;
+      --accent: #4f6df5; --accent2: #8b7cf6; --green: #22c55e;
+      --red: #ef4444; --yellow: #f59e0b; --text: #e4e7f5;
+      --muted: #6b7099; --card: #0e0e1c;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
+
+    /* HEADER */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,20,.95); position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--accent2); }
+    .admin-badge {
+      background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3);
+      color: var(--red); font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 20px; font-family: 'Space Mono', monospace; letter-spacing: 1px;
+    }
+    #adminWalletBtn {
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    #adminWalletBtn.connected {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 11px;
+    }
+
+    /* PAGES */
+    .page { display: none; padding: 24px; max-width: 1000px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    /* LOCK SCREEN */
+    #page-lock {
+      display: none; flex-direction: column; align-items: center;
+      justify-content: center; min-height: calc(100vh - 65px); text-align: center; padding: 40px 20px;
+    }
+    #page-lock.active { display: flex; }
+    .lock-icon { font-size: 56px; margin-bottom: 20px; }
+    .lock-title { font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700; color: var(--accent2); margin-bottom: 8px; }
+    .lock-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; max-width: 320px; line-height: 1.6; }
+    .denied { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 10px; padding: 14px 20px; color: var(--red); font-size: 14px; margin-top: 16px; display: none; }
+
+    /* BUTTONS */
+    .btn { border: none; border-radius: 8px; padding: 10px 18px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity .2s, transform .1s; }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-danger { background: rgba(239,68,68,.15); color: var(--red); border: 1px solid rgba(239,68,68,.3); }
+    .btn-danger:hover { background: rgba(239,68,68,.25); }
+    .btn-warn { background: rgba(245,158,11,.12); color: var(--yellow); border: 1px solid rgba(245,158,11,.3); }
+    .btn-warn:hover { background: rgba(245,158,11,.22); }
+    .btn-success { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+    .btn-success:hover { background: rgba(34,197,94,.22); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* STATS ROW */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-num { font-family: 'Space Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent2); }
+    .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* SECTION */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 16px; font-weight: 700; }
+    .section-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* SEARCH */
+    .search-bar {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--text);
+      font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none;
+      margin-bottom: 16px; transition: border-color .2s;
+    }
+    .search-bar:focus { border-color: var(--accent); }
+    .search-bar::placeholder { color: var(--muted); }
+
+    /* TEAM CARD */
+    .team-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; margin-bottom: 16px; overflow: hidden;
+    }
+    .team-card.banned { border-color: rgba(239,68,68,.3); }
+    .team-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; cursor: pointer; gap: 12px;
+    }
+    .team-header:hover { background: rgba(255,255,255,.02); }
+    .team-info { flex: 1; min-width: 0; }
+    .team-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .team-meta { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+    .team-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .team-members { padding: 0 20px 16px; border-top: 1px solid var(--border); }
+    .team-members.hidden { display: none; }
+
+    /* MEMBER ROW */
+    .member-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .member-row:last-child { border-bottom: none; }
+    .member-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .member-info { flex: 1; min-width: 0; }
+    .member-name { font-size: 13px; font-weight: 600; }
+    .member-wallet { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+    .member-balance { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent2); text-align: right; white-space: nowrap; }
+    .member-balance.loading { color: var(--muted); }
+    .role-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .role-captain { background: rgba(139,124,246,.2); color: var(--accent2); }
+    .role-member { background: rgba(34,197,94,.15); color: var(--green); }
+    .banned-badge { background: rgba(239,68,68,.15); color: var(--red); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+
+    /* BLOCKED WALLETS */
+    .blocked-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border: 1px solid rgba(239,68,68,.2);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 10px;
+    }
+    .blocked-wallet { font-family: 'Space Mono', monospace; font-size: 12px; flex: 1; color: var(--red); }
+    .blocked-reason { font-size: 11px; color: var(--muted); }
+
+    /* BLOCK FORM */
+    .block-form {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 20px;
+    }
+    .block-form label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+    .block-form input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--text);
+      font-family: 'Space Mono', monospace; font-size: 13px; outline: none; margin-bottom: 12px;
+    }
+    .block-form input:focus { border-color: var(--red); }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface); border-radius: 10px; padding: 4px; }
+    .tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; color: var(--muted); transition: background .2s, color .2s; border: none; background: transparent; font-family: 'Space Grotesk', sans-serif; }
+    .tab.active { background: var(--accent); color: #fff; }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+    .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 500; transition: transform .3s; z-index: 999; white-space: nowrap; max-width: 90vw; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: var(--green); color: var(--green); }
+    #toast.error { border-color: var(--red); color: var(--red); }
+
+    /* SPINNER */
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; max-width: 380px; width: 90%; text-align: center; }
+    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .modal p { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .team-actions { flex-direction: column; gap: 4px; }
+      header { padding: 12px 16px; }
+      .page { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="logo">Whatever<span style="color:var(--muted);">Coin</span>Dapp</div>
+    <div class="admin-badge">ADMIN</div>
+  </div>
+  <button id="adminWalletBtn">Connect Wallet</button>
+</header>
+
+<!-- LOCK SCREEN -->
+<div id="page-lock" class="page active">
+  <div class="lock-icon">🔐</div>
+  <div class="lock-title">Admin Access Only</div>
+  <div class="lock-sub">Connect your authorized wallet to access the admin dashboard.</div>
+  <button class="btn btn-primary" id="lockConnectBtn">Connect Phantom Wallet</button>
+  <div class="denied" id="deniedMsg">⛔ Access denied. This wallet is not authorized.</div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="page-admin" class="page">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="statTeams">—</div>
+      <div class="stat-label">Total Teams</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statMembers">—</div>
+      <div class="stat-label">Total Members</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statBlocked">—</div>
+      <div class="stat-label">Blocked Wallets</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statTokens">—</div>
+      <div class="stat-label">Total $WHATEVER</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" id="tab-teams" onclick="switchTab('teams')">👥 Teams</button>
+    <button class="tab" id="tab-blocked" onclick="switchTab('blocked')">🚫 Blocked</button>
+  </div>
+
+  <!-- TEAMS TAB -->
+  <div id="panel-teams">
+    <div class="section-header">
+      <div>
+        <div class="section-title">All Teams</div>
+        <div class="section-sub">Click a team to expand members and balances</div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="refreshBtn" onclick="loadDashboard()">↻ Refresh</button>
+    </div>
+    <input class="search-bar" id="searchBar" placeholder="Search by team name or wallet..." oninput="filterTeams()"/>
+    <div id="teamsList"><div class="empty"><div class="empty-icon">⏳</div>Loading teams...</div></div>
+  </div>
+
+  <!-- BLOCKED TAB -->
+  <div id="panel-blocked" style="display:none;">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Blocked Wallets</div>
+        <div class="section-sub">Blocked wallets cannot register or join teams</div>
+      </div>
+    </div>
+    <div class="block-form">
+      <label>Block a wallet address</label>
+      <input type="text" id="blockWalletInput" placeholder="Paste wallet address..." />
+      <label>Reason (optional)</label>
+      <input type="text" id="blockReasonInput" placeholder="e.g. Suspicious activity" />
+      <button class="btn btn-danger" onclick="blockWallet()">🚫 Block Wallet</button>
+    </div>
+    <div id="blockedList"><div class="empty"><div class="empty-icon">✅</div>No blocked wallets.</div></div>
+  </div>
+
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3 id="modalTitle">Confirm Action</h3>
+    <p id="modalBody">Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="modalConfirmBtn">Confirm</button>
+      <button class="btn" style="background:var(--surface);border:1px solid var(--border);" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp }                       from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getFirestore, collection, getDocs,
+           doc, deleteDoc, setDoc, getDoc,
+           query, where, onSnapshot }            from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+  // ================================================================
+  const ADMIN_WALLET   = 'F15VFu8E5TQ3xFKddVjYaQo8rx8qYzYLuwoyrjDHWNW7';
+  const WHATEVER_MINT  = 'AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump';
+  const SOLANA_RPC     = 'https://api.mainnet-beta.solana.com';
+  // ================================================================
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDW5aBwPQxLZmzWYfYsZnxxNlaBHuEsBTM",
+    authDomain:        "whatevercoindapp.firebaseapp.com",
+    projectId:         "whatevercoindapp",
+    storageBucket:     "whatevercoindapp.firebasestorage.app",
+    messagingSenderId: "447107415470",
+    appId:             "1:447107415470:web:d929f3811d91b97cbadc3f",
+    measurementId:     "G-XV9L57PTRL"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const db    = getFirestore(fbApp);
+
+  let adminWallet  = null;
+  let allTeamsData = [];
+  let modalAction  = null;
+
+  /* ── TOAST ── */
+  function toast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `show ${type}`;
+    setTimeout(() => t.className = '', 3500);
+  }
+
+  /* ── MODAL ── */
+  window.closeModal = function() {
+    document.getElementById('confirmModal').classList.remove('open');
+    modalAction = null;
+  }
+  function openModal(title, body, action) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent  = body;
+    modalAction = action;
+    document.getElementById('confirmModal').classList.add('open');
+  }
+  document.getElementById('modalConfirmBtn').addEventListener('click', () => {
+    if (modalAction) { modalAction(); closeModal(); }
+  });
+
+  /* ── TABS ── */
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    document.getElementById('panel-teams').style.display   = tab === 'teams'   ? 'block' : 'none';
+    document.getElementById('panel-blocked').style.display = tab === 'blocked' ? 'block' : 'none';
+    if (tab === 'blocked') loadBlockedList();
+  }
+
+  /* ── WALLET CONNECT ── */
+  async function connectAdminWallet() {
+    try {
+      const provider = window.phantom?.solana ?? window.solana;
+      if (!provider?.isPhantom) { toast('Open inside Phantom browser.', 'error'); return; }
+      const res = await provider.connect();
+      adminWallet = res.publicKey.toString();
+
+      const btn = document.getElementById('adminWalletBtn');
+      btn.textContent = adminWallet.slice(0,4) + '...' + adminWallet.slice(-4);
+      btn.classList.add('connected');
+
+      if (adminWallet !== ADMIN_WALLET) {
+        document.getElementById('deniedMsg').style.display = 'block';
+        toast('Access denied.', 'error');
+        return;
+      }
+
+      toast('Welcome, Admin! ✓');
+      showAdminPanel();
+    } catch(e) {
+      toast('Connection failed.', 'error');
+    }
+  }
+
+  function showAdminPanel() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-admin').classList.add('active');
+    loadDashboard();
+  }
+
+  /* ── SOLANA RPC ── */
+  async function rpcCall(method, params) {
+    const res = await fetch(SOLANA_RPC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+    });
+    const data = await res.json();
+    return data.result;
+  }
+
+  async function getWhateverBalance(wallet) {
+    try {
+      const result = await rpcCall('getTokenAccountsByOwner', [
+        wallet, { mint: WHATEVER_MINT }, { encoding: 'jsonParsed' }
+      ]);
+      if (!result?.value?.length) return 0;
+      return result.value[0].account.data.parsed.info.tokenAmount.uiAmount || 0;
+    } catch(e) { return 0; }
+  }
+
+  /* ── LOAD DASHBOARD ── */
+  window.loadDashboard = async function() {
+    const btn = document.getElementById('refreshBtn');
+    btn.innerHTML = '<span class="spinner"></span>Loading...';
+    btn.disabled = true;
+
+    try {
+      // Load all teams
+      const teamsSnap   = await getDocs(collection(db, 'teams'));
+      const membersSnap = await getDocs(collection(db, 'members'));
+      const blockedSnap = await getDocs(collection(db, 'blockedWallets'));
+
+      const teams   = teamsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const members = membersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const blocked = blockedSnap.docs.map(d => d.id);
+
+      // Group members by team
+      allTeamsData = teams.map(team => ({
+        ...team,
+        members: members.filter(m => m.captainWallet === team.captainWallet),
+        isBanned: blocked.includes(team.captainWallet)
+      }));
+
+      // Stats
+      document.getElementById('statTeams').textContent   = teams.length;
+      document.getElementById('statMembers').textContent = members.length;
+      document.getElementById('statBlocked').textContent = blocked.length;
+      document.getElementById('statTokens').textContent  = '...';
+
+      renderTeams(allTeamsData);
+
+      // Load balances in background
+      let totalTokens = 0;
+      for (const team of allTeamsData) {
+        for (const member of team.members) {
+          const balance = await getWhateverBalance(member.wallet);
+          member.balance = balance;
+          totalTokens += balance;
+          document.getElementById('statTokens').textContent = totalTokens.toLocaleString(undefined, {maximumFractionDigits: 0});
+          updateMemberBalance(member.wallet, balance);
+        }
+      }
+
+    } catch(e) {
+      toast('Error loading data: ' + e.message, 'error');
+    } finally {
+      btn.innerHTML = '↻ Refresh';
+      btn.disabled = false;
+    }
+  }
+
+  /* ── RENDER TEAMS ── */
+  function renderTeams(teams) {
+    const el = document.getElementById('teamsList');
+    if (!teams.length) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teams found.</div>';
+      return;
+    }
+    el.innerHTML = teams.map(team => `
+      <div class="team-card ${team.isBanned ? 'banned' : ''}" id="team-${team.captainWallet}">
+        <div class="team-header" onclick="toggleTeam('${team.captainWallet}')">
+          <div class="team-info">
+            <div class="team-name">
+              ${team.name}
+              ${team.isBanned ? '<span class="banned-badge">BANNED</span>' : ''}
+            </div>
+            <div class="team-meta">
+              Captain: ${team.captainUsername} · ${team.captainWallet.slice(0,6)}...${team.captainWallet.slice(-4)} · ${team.members.length} members
+            </div>
+          </div>
+          <div class="team-actions" onclick="event.stopPropagation()">
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteTeam('${team.captainWallet}', '${team.name.replace(/'/g,"\\'")}')">🗑 Delete Team</button>
+            ${team.isBanned
+              ? `<button class="btn btn-success btn-sm" onclick="unblockWalletDirect('${team.captainWallet}')">✅ Unblock</button>`
+              : `<button class="btn btn-warn btn-sm" onclick="confirmBlockWallet('${team.captainWallet}', '${team.captainUsername.replace(/'/g,"\\'")}')">🚫 Block</button>`
+            }
+          </div>
+        </div>
+        <div class="team-members hidden" id="members-${team.captainWallet}">
+          ${team.members.map(m => `
+            <div class="member-row" id="row-${m.wallet}">
+              <div class="member-avatar">${m.username[0].toUpperCase()}</div>
+              <div class="member-info">
+                <div class="member-name">
+                  ${m.username}
+                  <span class="role-badge ${m.role === 'captain' ? 'role-captain' : 'role-member'}">${m.role}</span>
+                </div>
+                <div class="member-wallet">${m.wallet}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="member-balance loading" id="bal-${m.wallet}">Loading...</div>
+                ${m.role !== 'captain' ? `<button class="btn btn-danger btn-sm" onclick="confirmRemoveMember('${m.wallet}', '${m.username.replace(/'/g,"\\'")}', '${team.captainWallet}')">✕</button>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ── UPDATE MEMBER BALANCE ── */
+  function updateMemberBalance(wallet, balance) {
+    const el = document.getElementById(`bal-${wallet}`);
+    if (el) {
+      el.textContent = balance.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' $WHATEVER';
+      el.classList.remove('loading');
+    }
+  }
+
+  /* ── TOGGLE TEAM ── */
+  window.toggleTeam = function(captainWallet) {
+    const el = document.getElementById(`members-${captainWallet}`);
+    if (el) el.classList.toggle('hidden');
+  }
+
+  /* ── FILTER TEAMS ── */
+  window.filterTeams = function() {
+    const q = document.getElementById('searchBar').value.toLowerCase();
+    const filtered = allTeamsData.filter(t =>
+      t.name.toLowerCase().includes(q) ||
+      t.captainWallet.toLowerCase().includes(q) ||
+      t.captainUsername.toLowerCase().includes(q) ||
+      t.members.some(m => m.wallet.toLowerCase().includes(q) || m.username.toLowerCase().includes(q))
+    );
+    renderTeams(filtered);
+  }
+
+  /* ── DELETE TEAM ── */
+  window.confirmDeleteTeam = function(captainWallet, teamName) {
+    openModal('Delete Team', `Delete "${teamName}" and all its members? This cannot be undone.`, async () => {
+      try {
+        // Delete team doc
+        await deleteDoc(doc(db, 'teams', captainWallet));
+        // Delete all members of this team
+        const membersSnap = await getDocs(query(collection(db, 'members'), where('captainWallet', '==', captainWallet)));
+        for (const m of membersSnap.docs) { await deleteDoc(m.ref); }
+        toast(`Team "${teamName}" deleted.`);
+        loadDashboard();
+      } catch(e) { toast('Error deleting team.', 'error'); }
+    });
+  }
+
+  /* ── REMOVE MEMBER ── */
+  window.confirmRemoveMember = function(wallet, username, captainWallet) {
+    openModal('Remove Member', `Remove "${username}" from this team? They can rejoin another team.`, async () => {
+      try {
+        await deleteDoc(doc(db, 'members', wallet));
+        toast(`${username} removed.`);
+        loadDashboard();
+      } catch(e) { toast('Error removing member.', 'error'); }
+    });
+  }
+
+  /* ── BLOCK WALLET ── */
+  window.blockWallet = async function() {
+    const wallet = document.getElementById('blockWalletInput').value.trim();
+    const reason = document.getElementById('blockReasonInput').value.trim();
+    if (!wallet || wallet.length < 32) { toast('Enter a valid wallet address.', 'error'); return; }
+    try {
+      await setDoc(doc(db, 'blockedWallets', wallet), { wallet, reason: reason || 'No reason given', blockedAt: Date.now(), blockedBy: adminWallet });
+      document.getElementById('blockWalletInput').value = '';
+      document.getElementById('blockReasonInput').value = '';
+      toast('Wallet blocked.');
+      loadBlockedList();
+      loadDashboard();
+    } catch(e) { toast('Error blocking wallet.', 'error'); }
+  }
+
+  window.confirmBlockWallet = function(wallet, username) {
+    openModal('Block Wallet', `Block ${username} (${wallet.slice(0,6)}...)? They won't be able to register or join teams.`, async () => {
+      await setDoc(doc(db, 'blockedWallets', wallet), { wallet, reason: 'Blocked by admin', blockedAt: Date.now(), blockedBy: adminWallet });
+      toast(`${username} blocked.`);
+      loadDashboard();
+      loadBlockedList();
+    });
+  }
+
+  window.unblockWalletDirect = async function(wallet) {
+    try {
+      await deleteDoc(doc(db, 'blockedWallets', wallet));
+      toast('Wallet unblocked.');
+      loadDashboard();
+      loadBlockedList();
+    } catch(e) { toast('Error unblocking.', 'error'); }
+  }
+
+  /* ── LOAD BLOCKED LIST ── */
+  async function loadBlockedList() {
+    const el = document.getElementById('blockedList');
+    try {
+      const snap = await getDocs(collection(db, 'blockedWallets'));
+      if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">✅</div>No blocked wallets.</div>'; return; }
+      el.innerHTML = snap.docs.map(d => {
+        const data = d.data();
+        return `
+          <div class="blocked-item">
+            <div style="flex:1;">
+              <div class="blocked-wallet">${data.wallet}</div>
+              <div class="blocked-reason">${data.reason || 'No reason'} · ${new Date(data.blockedAt).toLocaleDateString()}</div>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="unblockWalletDirect('${data.wallet}')">✅ Unblock</button>
+          </div>`;
+      }).join('');
+    } catch(e) { el.innerHTML = '<div class="empty">Error loading blocked wallets.</div>'; }
+  }
+
+  /* ── WIRE BUTTONS ── */
+  document.getElementById('adminWalletBtn').addEventListener('click', connectAdminWallet);
+  document.getElementById('lockConnectBtn').addEventListener('click', connectAdminWallet);
+
+  /* ── AUTO RECONNECT ── */
+  (async () => {
+    const provider = window.phantom?.solana ?? window.solana;
+    if (provider?.isPhantom) {
+      try {
+        const res = await provider.connect({ onlyIfTrusted: true });
+        adminWallet = res.publicKey.toString();
+        const btn = document.getElementById('adminWalletBtn');
+        btn.textContent = adminWallet.slice(0,4) + '...' + adminWallet.slice(-4);
+        btn.classList.add('connected');
+        if (adminWallet === ADMIN_WALLET) showAdminPanel();
+      } catch(_) {}
+    }
+  })();
+
+</script>
+</body>
+</html>
