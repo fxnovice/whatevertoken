@@ -106,6 +106,52 @@
 
     .verified-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 20px; }
 
+    /* ── WALLET MODAL ── */
+    .wallet-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.7); z-index: 500;
+      align-items: flex-end; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .wallet-modal-overlay.open { display: flex; }
+    .wallet-modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
+      padding: 24px 20px 36px; animation: slideUp .25s ease;
+      max-height: 85vh; overflow-y: auto;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .wallet-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .wallet-modal-title { font-size: 18px; font-weight: 700; }
+    .wallet-modal-close { background: var(--card); border: 1px solid var(--border); color: var(--muted); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+    .wallet-modal-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .wallet-section-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin: 16px 0 8px; }
+
+    /* Detected wallets pulse border */
+    .wallet-item {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
+      cursor: pointer; transition: border-color .2s, background .2s, transform .1s;
+    }
+    .wallet-item:hover { border-color: var(--accent); background: rgba(79,109,245,.06); }
+    .wallet-item:active { transform: scale(.98); }
+    .wallet-item.detected { border-color: rgba(34,197,94,.4); background: rgba(34,197,94,.05); }
+    .wallet-item.detected:hover { border-color: var(--green); background: rgba(34,197,94,.1); }
+    .wallet-item.connecting { opacity: .7; pointer-events: none; }
+    .wallet-icon-wrap { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--surface); }
+    .wallet-icon-wrap svg { width: 44px; height: 44px; display: block; }
+    .wallet-item-info { flex: 1; }
+    .wallet-item-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .wallet-item-desc { font-size: 12px; color: var(--muted); }
+    .wallet-item-status {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .wallet-item.mobile-ready { border-color: rgba(79,109,245,.35); background: rgba(79,109,245,.05); }
+    .wallet-item.mobile-ready:hover { border-color: var(--accent); background: rgba(79,109,245,.1); }
+    .status-mobile { background: rgba(79,109,245,.18); color: var(--accent2); }
+
     /* ── STAKING STYLES ── */
     .staking-hero {
       background: linear-gradient(135deg, rgba(79,109,245,.15), rgba(139,124,246,.15));
@@ -165,9 +211,8 @@
     .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
 
     .loading-state { text-align: center; padding: 40px 20px; color: var(--muted); }
-    .loading-state .spinner { border-top-color: var(--accent2); border-color: rgba(139,124,246,.3); width: 24px; height: 24px; margin: 0 auto 12px; display: block; }
 
-    /* BOTTOM NAV for dashboards */
+    /* BOTTOM NAV */
     .bottom-nav { display: flex; gap: 0; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,20,.95); backdrop-filter: blur(12px); z-index: 99; }
     .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; font-size: 10px; font-weight: 600; color: var(--muted); background: transparent; border: none; cursor: pointer; transition: color .2s; text-transform: uppercase; letter-spacing: .5px; }
     .nav-btn .nav-icon { font-size: 20px; }
@@ -266,10 +311,22 @@
       <p>Last step — link your Solana wallet to your verified account.</p>
     </div>
     <div class="verified-badge">✓ Email verified</div>
-    <button class="btn-primary" id="connectWalletBtn">Connect Phantom Wallet</button>
+    <!-- FIX: This button now correctly opens the wallet selection modal -->
+    <button class="btn-primary" id="openWalletModalBtn">Connect Wallet</button>
     <div style="margin-top:16px;padding:14px;background:rgba(79,109,245,.08);border:1px solid rgba(79,109,245,.2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.6;text-align:center;">
-      📱 <strong style="color:var(--text);">iOS users:</strong> Tapping the button will open this page inside Phantom's browser automatically.<br/>
-      🤖 <strong style="color:var(--text);">Android users:</strong> Open this page inside Phantom's built-in browser tab.
+      ⚠️ $WHATEVER is on <strong style="color:var(--text);">Solana</strong> — make sure your wallet supports Solana tokens.
+    </div>
+  </div>
+
+  <!-- WALLET MODAL -->
+  <div id="walletModal" class="wallet-modal-overlay">
+    <div class="wallet-modal">
+      <div class="wallet-modal-header">
+        <div class="wallet-modal-title">Select Wallet</div>
+        <button class="wallet-modal-close" id="closeWalletModal">✕</button>
+      </div>
+      <div class="wallet-modal-subtitle">Detected wallets are highlighted in green</div>
+      <div id="walletModalList"></div>
     </div>
   </div>
 
@@ -380,27 +437,21 @@
       <p>Your $WHATEVER mining overview.</p>
     </div>
 
-    <!-- Loading state -->
     <div id="stakingLoading" class="loading-state">
       <span class="spinner" style="border-top-color:var(--accent2);border-color:rgba(139,124,246,.3);width:24px;height:24px;display:inline-block;margin-bottom:12px;"></span>
       <div>Checking your wallet...</div>
     </div>
 
-    <!-- Main staking content (hidden until loaded) -->
     <div id="stakingContent" style="display:none;">
-
-      <!-- Balance hero -->
       <div class="staking-hero">
         <div class="staking-balance" id="stakingBalance">—</div>
         <div class="staking-balance-label">$WHATEVER in wallet</div>
         <div style="margin-top:8px;font-size:12px;color:var(--muted);">≈ <span id="solEquivalent">—</span> SOL equivalent</div>
       </div>
 
-      <!-- NFT status -->
       <div class="section-label">Mining NFT</div>
       <div id="nftCardSlot"></div>
 
-      <!-- Yield breakdown (only shown if NFT found) -->
       <div id="yieldSection" style="display:none;">
         <div class="section-label">Monthly Yield Breakdown</div>
         <div class="yield-breakdown">
@@ -422,7 +473,6 @@
           </div>
         </div>
 
-        <!-- Compounding toggle -->
         <div class="compound-toggle">
           <div>
             <div class="compound-label">Compounding</div>
@@ -434,13 +484,11 @@
           </label>
         </div>
 
-        <!-- Forfeit warning -->
         <div class="forfeit-warning" id="forfeitWarning" style="display:none;">
           <div class="warn-icon">⚠️</div>
           <p>Selling more than 10% of your staked tokens will forfeit your staking rewards until the next monthly renewal.</p>
         </div>
 
-        <!-- Forfeit threshold info -->
         <div class="yield-breakdown">
           <div class="yield-row">
             <span class="yield-label">Safe sell limit (10%)</span>
@@ -451,12 +499,9 @@
             <span class="yield-value">Monthly</span>
           </div>
         </div>
-
       </div>
-
     </div>
 
-    <!-- Bottom nav -->
     <div class="bottom-nav">
       <button class="nav-btn" id="stakingTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
       <button class="nav-btn active" id="stakingActiveNavBtn"><span class="nav-icon">⚡</span>Staking</button>
@@ -477,11 +522,9 @@
            sendEmailVerification }              from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
   // ================================================================
-  // ✅ $WHATEVER token address set
-  // ⚠️  NFT_COLLECTION — swap when Alex delivers it
-  const WHATEVER_MINT    = 'AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump';
-  const NFT_COLLECTION   = 'MINING_NFT_COLLECTION_ADDRESS_HERE';
-  const SOLANA_RPC       = 'https://api.mainnet-beta.solana.com';
+  const WHATEVER_MINT  = 'AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump';
+  const NFT_COLLECTION = 'MINING_NFT_COLLECTION_ADDRESS_HERE';
+  const SOLANA_RPC     = 'https://api.mainnet-beta.solana.com';
   // ================================================================
 
   const firebaseConfig = {
@@ -499,13 +542,13 @@
   const auth  = getAuth(fbApp);
 
   /* ── STATE ── */
-  let walletAddress  = null;
-  let currentTeam    = null;
-  let verifiedEmail  = null;
-  let unsubscribe    = null;
-  let isSignUpMode   = true;
-  let userRole       = null; // 'captain' or 'member'
-  let stakingData    = null;
+  let walletAddress = null;
+  let currentTeam   = null;
+  let verifiedEmail = null;
+  let unsubscribe   = null;
+  let isSignUpMode  = true;
+  let userRole      = null;
+  let stakingData   = null;
 
   /* ── TOAST ── */
   function toast(msg, type = 'success') {
@@ -545,14 +588,12 @@
       let result;
       if (isSignUpMode) {
         result = await createUserWithEmailAndPassword(auth, email, password);
-        // Send verification email
         await sendEmailVerification(result.user);
         document.getElementById('verifySubtitle').textContent = `Verification link sent to ${email}. Check your inbox!`;
         toast('Account created! Check your email. ✓');
         showPage('page-verify-email');
       } else {
         result = await signInWithEmailAndPassword(auth, email, password);
-        // Check if email is verified
         if (!result.user.emailVerified) {
           document.getElementById('verifySubtitle').textContent = `Please verify ${email} first. Check your inbox!`;
           toast('Please verify your email first.', 'error');
@@ -566,9 +607,9 @@
       }
     } catch(e) {
       let msg = e.message || 'Authentication failed';
-      if (e.code === 'auth/email-already-in-use') msg = 'Email already registered. Try logging in instead.';
+      if (e.code === 'auth/email-already-in-use')                  msg = 'Email already registered. Try logging in instead.';
       if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Wrong password.';
-      if (e.code === 'auth/user-not-found') msg = 'No account found. Try signing up instead.';
+      if (e.code === 'auth/user-not-found')                         msg = 'No account found. Try signing up instead.';
       toast(msg, 'error');
     } finally {
       btn.innerHTML = isSignUpMode ? 'Sign Up' : 'Log In';
@@ -613,89 +654,224 @@
     }
   }
 
-  /* ── DETECT PLATFORM ── */
+  /* ── PLATFORM HELPERS ── */
   function isIOS() {
     return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   }
 
-  function getProvider() {
-    // Try all known Phantom provider locations
-    if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
-    if (window.solana?.isPhantom)          return window.solana;
-    if (window.phantom?.ethereum)          return null; // wrong chain
-    return null;
+  /* ── PLATFORM DETECTION ── */
+  // On mobile (iOS/Android) outside a wallet's in-app browser, window.* providers
+  // are never injected. We detect this and show "Open in app" instead of "Not installed".
+  const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // Inline SVG icons — no external requests, no CORS failures, always render correctly
+  const ICONS = {
+    phantom:  `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="26" fill="#AB9FF2"/><path d="M110.4 64.8C110.4 41.1 91.3 22 67.6 22H61c-24.4 0-44 19.6-44 44 0 8.8 7.2 16 16 16h4.2c2.2 8.6 10 15 19.4 15 2.6 0 5-.5 7.3-1.4 1.6 1 3.5 1.4 5.5 1.4h4.2c9.3 0 17-6.4 19.4-15h4c8.8 0 13.4-7.2 13.4-17.2zm-58.6 5.6c0 3.8-3.1 6.9-6.9 6.9s-6.9-3.1-6.9-6.9 3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9zm30.3 0c0 3.8-3.1 6.9-6.9 6.9s-6.9-3.1-6.9-6.9 3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9z" fill="white"/></svg>`,
+
+    solflare: `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="26" fill="#FC8A00"/><path d="M64 18L96 82H32L64 18Z" fill="white" opacity="0.9"/><path d="M64 110L32 82H96L64 110Z" fill="white" opacity="0.6"/></svg>`,
+
+    backpack: `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="26" fill="#E33E3F"/><path d="M44 44h40a8 8 0 018 8v32a8 8 0 01-8 8H44a8 8 0 01-8-8V52a8 8 0 018-8z" fill="white"/><path d="M54 44V38a10 10 0 0120 0v6" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="56" y="60" width="16" height="12" rx="3" fill="#E33E3F"/></svg>`,
+
+    trust:    `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="26" fill="#3375BB"/><path d="M64 22l32 14v24c0 18-13.5 34.8-32 40C45.5 94.8 32 78 32 60V36L64 22z" fill="white" opacity="0.95"/><path d="M54 63l7 7 14-14" stroke="#3375BB" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+
+    coinbase: `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="26" fill="#0052FF"/><circle cx="64" cy="64" r="34" fill="white"/><path d="M54 56h20a2 2 0 012 2v12a2 2 0 01-2 2H54a2 2 0 01-2-2V58a2 2 0 012-2z" fill="#0052FF"/></svg>`,
+
+    metamask: `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="26" fill="#F6851B"/><polygon points="100,22 68,46 74,34" fill="#E2761B"/><polygon points="28,22 59.6,46.2 54.2,34" fill="#E4761B"/><polygon points="88.6,82 80,95.4 98.2,100.4 103.4,82.2" fill="#E4761B"/><polygon points="24.8,82.2 30,100.4 48.2,95.4 39.6,82" fill="#E4761B"/><polygon points="47.2,57.2 42.2,64.6 60.2,65.4 59.6,46" fill="#E4761B"/><polygon points="80.8,57.2 68.2,45.8 68,65.4 85.8,64.6" fill="#E4761B"/><polygon points="48.2,95.4 59,89.6 49.6,82.4" fill="#E4761B"/><polygon points="69,89.6 80,95.4 78.6,82.4" fill="#E4761B"/></svg>`
+  };
+
+  /* ── WALLET DEFINITIONS ── */
+  const WALLETS = [
+    {
+      key: 'phantom',
+      name: 'Phantom',
+      desc: isMobileDevice ? 'Tap to open in Phantom app' : 'Most popular Solana wallet',
+      getProvider() {
+        if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
+        if (window.solana?.isPhantom)          return window.solana;
+        return null;
+      },
+      // On mobile, always show a deep link option even if not "detected"
+      mobileReady: true,
+      deepLink() {
+        return `https://phantom.app/ul/browse/${encodeURIComponent(window.location.href)}?ref=${encodeURIComponent(window.location.origin)}`;
+      }
+    },
+    {
+      key: 'solflare',
+      name: 'Solflare',
+      desc: isMobileDevice ? 'Tap to open in Solflare app' : 'Native Solana wallet',
+      getProvider() { return window.solflare?.isSolflare ? window.solflare : null; },
+      mobileReady: true,
+      deepLink() {
+        return `https://solflare.com/ul/v1/browse/${encodeURIComponent(window.location.href)}?ref=${encodeURIComponent(window.location.origin)}`;
+      }
+    },
+    {
+      key: 'backpack',
+      name: 'Backpack',
+      desc: 'xNFT wallet by Coral',
+      getProvider() { return window.backpack?.isBackpack ? window.backpack : null; },
+      mobileReady: false,
+      deepLink() { return null; }
+    },
+    {
+      key: 'trust',
+      name: 'Trust Wallet',
+      desc: 'Multi-chain with Solana',
+      getProvider() {
+        return window.trustwallet?.solana ?? (window.solana?.isTrust ? window.solana : null);
+      },
+      mobileReady: false,
+      deepLink() { return null; }
+    },
+    {
+      key: 'coinbase',
+      name: 'Coinbase Wallet',
+      desc: 'Supports Solana tokens',
+      getProvider() { return window.coinbaseSolana ?? null; },
+      mobileReady: false,
+      deepLink() { return null; }
+    },
+    {
+      key: 'metamask',
+      name: 'MetaMask',
+      desc: 'Solana support via Snaps',
+      getProvider() {
+        return (window.ethereum?.isMetaMask && window.solana?.isMetaMask) ? window.solana : null;
+      },
+      mobileReady: false,
+      deepLink() { return null; }
+    }
+  ];
+
+  /* ── OPEN WALLET MODAL ── */
+  function openWalletModal() {
+    const list = document.getElementById('walletModalList');
+
+    // On mobile: wallets with deepLinks are "ready to open" even if not window-injected
+    const detected      = WALLETS.filter(w => w.getProvider());
+    const mobileReady   = WALLETS.filter(w => !w.getProvider() && isMobileDevice && w.mobileReady);
+    const notAvailable  = WALLETS.filter(w => !w.getProvider() && !(isMobileDevice && w.mobileReady));
+
+    let html = '';
+    if (detected.length) {
+      html += `<div class="wallet-section-label">✅ Connected &amp; ready</div>`;
+      html += detected.map(w => walletItemHTML(w, 'detected')).join('');
+    }
+    if (mobileReady.length) {
+      html += `<div class="wallet-section-label">📲 Tap to open in app</div>`;
+      html += mobileReady.map(w => walletItemHTML(w, 'mobile')).join('');
+    }
+    if (notAvailable.length) {
+      html += `<div class="wallet-section-label">🖥 Desktop / not installed</div>`;
+      html += notAvailable.map(w => walletItemHTML(w, 'none')).join('');
+    }
+    if (!detected.length && !mobileReady.length && !notAvailable.length) {
+      html = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px;">No wallets found. Install a Solana wallet.</div>';
+    }
+    list.innerHTML = html;
+
+    WALLETS.forEach(w => {
+      const el = document.getElementById(`witem-${w.key}`);
+      if (el) el.addEventListener('click', () => connectWallet(w.key));
+    });
+
+    document.getElementById('walletModal').classList.add('open');
   }
 
-  function isInPhantomBrowser() {
-    return !!getProvider();
+  function walletItemHTML(w, state) {
+    // state: 'detected' | 'mobile' | 'none'
+    const cls        = state === 'detected' ? 'detected' : state === 'mobile' ? 'mobile-ready' : '';
+    const statusCls  = state === 'detected' ? 'status-detected' : state === 'mobile' ? 'status-mobile' : 'status-install';
+    const statusTxt  = state === 'detected' ? '● Detected' : state === 'mobile' ? '↗ Open app' : 'Not installed';
+    return `
+      <div class="wallet-item ${cls}" id="witem-${w.key}">
+        <div class="wallet-icon-wrap">${ICONS[w.key] || ''}</div>
+        <div class="wallet-item-info">
+          <div class="wallet-item-name">${w.name}</div>
+          <div class="wallet-item-desc">${w.desc}</div>
+        </div>
+        <div class="wallet-item-status ${statusCls}">${statusTxt}</div>
+      </div>`;
   }
 
-  function openInPhantom() {
-    const url     = encodeURIComponent(window.location.href);
-    const origin  = encodeURIComponent(window.location.origin);
-    const deepLink = `https://phantom.app/ul/browse/${url}?ref=${origin}`;
-    toast('Opening in Phantom browser...', 'success');
-    setTimeout(() => { window.location.href = deepLink; }, 800);
+  function closeWalletModal() {
+    document.getElementById('walletModal').classList.remove('open');
   }
 
-  /* ── CONNECT WALLET ── */
-  async function connectWallet() {
-    const provider = getProvider();
+  /* ── CONNECT SPECIFIC WALLET ── */
+  async function connectWallet(walletKey) {
+    const walletDef = WALLETS.find(w => w.key === walletKey);
+    if (!walletDef) return;
 
-    // Not inside Phantom at all — redirect
+    const provider = walletDef.getProvider();
+    const itemEl   = document.getElementById(`witem-${walletKey}`);
+
     if (!provider) {
-      openInPhantom();
+      const deepLink = walletDef.deepLink?.();
+      if (deepLink) {
+        toast(`Opening ${walletDef.name}...`, 'success');
+        setTimeout(() => { window.location.href = deepLink; }, 800);
+      } else {
+        toast(`${walletDef.name} not found. Open this page inside the ${walletDef.name} app.`, 'error');
+      }
       return;
     }
 
-    const btn = document.getElementById('connectWalletBtn');
-    btn.innerHTML = '<span class="spinner"></span>Connecting...';
-    btn.disabled = true;
+    if (itemEl) {
+      itemEl.classList.add('connecting');
+      const statusEl = itemEl.querySelector('.wallet-item-status');
+      statusEl.textContent = 'Connecting...';
+      statusEl.className   = 'wallet-item-status status-connecting';
+    }
 
     try {
-      // iOS Phantom sometimes needs a small delay before connect
       if (isIOS()) await new Promise(r => setTimeout(r, 300));
 
       const res = await provider.connect();
       walletAddress = res.publicKey.toString();
 
+      closeWalletModal();
+
       const walletBtn = document.getElementById('walletBtn');
       walletBtn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
       walletBtn.classList.add('connected');
+      walletBtn.style.display = 'block';
 
       if (verifiedEmail) {
-        await setDoc(doc(db, 'emailIndex', verifiedEmail.replace(/[.#$\[\]]/g, '_')), {
-          wallet: walletAddress, email: verifiedEmail, verifiedAt: Date.now()
+        await setDoc(doc(db, 'emailIndex', verifiedEmail.replace(/[.#$[\]]/g, '_')), {
+          wallet: walletAddress, email: verifiedEmail,
+          walletType: walletDef.name, verifiedAt: Date.now()
         });
       }
-      toast('Wallet connected! ✓');
+      toast(`${walletDef.name} connected! ✓`);
       await checkExistingUser();
     } catch(e) {
-      if (e.code === 4001 || e.message?.includes('User rejected')) {
-        toast('Connection cancelled. Tap approve in Phantom.', 'error');
-      } else if (isIOS()) {
-        // iOS sometimes fails on first attempt — suggest retry
-        toast('Connection failed. Close Phantom and try again.', 'error');
-      } else {
-        toast('Error: ' + (e.message || 'Connection failed'), 'error');
+      if (itemEl) {
+        itemEl.classList.remove('connecting');
+        const statusEl   = itemEl.querySelector('.wallet-item-status');
+        const isDetected = !!walletDef.getProvider();
+        const isMobile   = isMobileDevice && walletDef.mobileReady && !isDetected;
+        statusEl.textContent = isDetected ? '● Detected' : isMobile ? '↗ Open app' : 'Not installed';
+        statusEl.className   = `wallet-item-status ${isDetected ? 'status-detected' : isMobile ? 'status-mobile' : 'status-install'}`;
       }
-    } finally {
-      btn.innerHTML = 'Connect Phantom Wallet';
-      btn.disabled = false;
+      if (e.code === 4001 || e.message?.includes('User rejected')) {
+        toast('Connection cancelled.', 'error');
+      } else {
+        toast(`${walletDef.name}: ` + (e.message || 'Connection failed'), 'error');
+      }
     }
   }
 
   /* ── CHECK EXISTING USER ── */
   async function checkExistingUser() {
     try {
-      // Check if wallet is blocked
       const blockedDoc = await getDoc(doc(db, 'blockedWallets', walletAddress));
       if (blockedDoc.exists()) {
         toast('This wallet has been blocked from the DApp.', 'error');
         showPage('page-home');
         return;
       }
-
       const captainDoc = await getDoc(doc(db, 'teams', walletAddress));
       if (captainDoc.exists()) {
         currentTeam = captainDoc.data();
@@ -738,22 +914,17 @@
         { encoding: 'jsonParsed' }
       ]);
       if (!result?.value?.length) return 0;
-      const amount = result.value[0].account.data.parsed.info.tokenAmount.uiAmount;
-      return amount || 0;
-    } catch(e) {
-      return 0;
-    }
+      return result.value[0].account.data.parsed.info.tokenAmount.uiAmount || 0;
+    } catch(e) { return 0; }
   }
 
-  /* ── GET SOL PRICE (for captain gate check) ── */
+  /* ── GET SOL PRICE ── */
   async function getSolPrice() {
     try {
-      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+      const res  = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
       const data = await res.json();
       return data.solana.usd;
-    } catch(e) {
-      return 150; // fallback price
-    }
+    } catch(e) { return 150; }
   }
 
   /* ── GET WHATEVER TOKEN PRICE ── */
@@ -762,9 +933,7 @@
       const res  = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${WHATEVER_MINT}`);
       const data = await res.json();
       return parseFloat(data.pairs?.[0]?.priceUsd || 0);
-    } catch(e) {
-      return 0;
-    }
+    } catch(e) { return 0; }
   }
 
   /* ── CHECK MINING NFT ── */
@@ -776,42 +945,26 @@
         { encoding: 'jsonParsed' }
       ]);
       if (!result?.value?.length) return null;
-
-      // Find NFTs (amount = 1, decimals = 0)
       const nfts = result.value.filter(a => {
         const info = a.account.data.parsed.info;
         return info.tokenAmount.amount === '1' && info.tokenAmount.decimals === 0;
       });
-
       if (!nfts.length) return null;
-
-      // Check each NFT's metadata for our collection
-      // Once Alex provides NFT collection address + IPFS metadata, we check here
-      // For now return null until NFT_COLLECTION address is set
       if (NFT_COLLECTION === 'MINING_NFT_COLLECTION_ADDRESS_HERE') return null;
-
-      // TODO: parse IPFS metadata to get ROI % once collection is live
-      // Example return format:
-      // return { name: 'Bronze Miner', roiYearly: 10, image: '...' };
+      // TODO: parse IPFS metadata once collection is live
       return null;
-    } catch(e) {
-      return null;
-    }
+    } catch(e) { return null; }
   }
 
-  /* ── CHECK CAPTAIN GATE (1 SOL worth of $WHATEVER) ── */
+  /* ── CHECK CAPTAIN GATE ── */
   async function checkCaptainGate(balance) {
     try {
-      if (WHATEVER_MINT === 'WHATEVER_MINT_ADDRESS_HERE') return true; // skip check until live
-      const solPrice      = await getSolPrice();
-      const tokenPrice    = await getWhateverPrice();
-      if (tokenPrice === 0) return true; // skip check if price not available
-      const oneSolInUsd   = solPrice;
-      const tokenValueUsd = balance * tokenPrice;
-      return tokenValueUsd >= oneSolInUsd;
-    } catch(e) {
-      return true; // allow if check fails
-    }
+      if (WHATEVER_MINT === 'WHATEVER_MINT_ADDRESS_HERE') return true;
+      const solPrice   = await getSolPrice();
+      const tokenPrice = await getWhateverPrice();
+      if (tokenPrice === 0) return true;
+      return (balance * tokenPrice) >= solPrice;
+    } catch(e) { return true; }
   }
 
   /* ── LOAD STAKING PAGE ── */
@@ -819,40 +972,32 @@
     showPage('page-staking');
     updateStakingNav();
 
-    document.getElementById('stakingLoading').style.display = 'block';
-    document.getElementById('stakingContent').style.display = 'none';
+    document.getElementById('stakingLoading').style.display  = 'block';
+    document.getElementById('stakingContent').style.display  = 'none';
 
     try {
-      // Fetch balance and NFT in parallel
       const [balance, nft] = await Promise.all([
         getWhateverBalance(walletAddress),
         getMiningNFT(walletAddress)
       ]);
-
       stakingData = { balance, nft };
 
-      // Update balance display
       document.getElementById('stakingBalance').textContent = balance.toLocaleString() + ' $WHATEVER';
-      const tokenPrice = await getWhateverPrice();
-      const solPrice   = await getSolPrice();
+      document.getElementById('safeLimit').textContent      = (balance * 0.9).toLocaleString() + ' $WHATEVER';
+
+      const [tokenPrice, solPrice] = await Promise.all([getWhateverPrice(), getSolPrice()]);
       if (tokenPrice > 0 && solPrice > 0) {
-        const usdValue  = balance * tokenPrice;
-        const solValue  = usdValue / solPrice;
+        const solValue = (balance * tokenPrice) / solPrice;
         document.getElementById('solEquivalent').textContent = solValue.toFixed(4) + ' SOL';
       } else {
         document.getElementById('solEquivalent').textContent = 'Price loading...';
       }
 
-      // Update safe sell limit
-      document.getElementById('safeLimit').textContent = (balance * 0.9).toLocaleString() + ' $WHATEVER';
-
-      // NFT card
       const nftSlot = document.getElementById('nftCardSlot');
       if (nft) {
-        const roiMonthly = nft.roiYearly / 12;
+        const roiMonthly   = nft.roiYearly / 12;
         const monthlyYield = balance * (roiMonthly / 100);
         const nextBase     = balance + monthlyYield;
-
         nftSlot.innerHTML = `
           <div class="nft-card">
             <div class="nft-icon">💎</div>
@@ -862,27 +1007,26 @@
               <div class="nft-roi-label">Yearly ROI</div>
             </div>
           </div>`;
-
-        document.getElementById('yearlyRoi').textContent    = nft.roiYearly + '%';
-        document.getElementById('monthlyRate').textContent  = roiMonthly.toFixed(4) + '%';
-        document.getElementById('monthlyYield').textContent = monthlyYield.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' $WHATEVER';
-        document.getElementById('nextMonthBase').textContent = nextBase.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' $WHATEVER';
-
-        document.getElementById('yieldSection').style.display = 'block';
-        document.getElementById('forfeitWarning').style.display = 'flex';
+        document.getElementById('yearlyRoi').textContent     = nft.roiYearly + '%';
+        document.getElementById('monthlyRate').textContent   = roiMonthly.toFixed(4) + '%';
+        document.getElementById('monthlyYield').textContent  = monthlyYield.toLocaleString(undefined, {maximumFractionDigits:2}) + ' $WHATEVER';
+        document.getElementById('nextMonthBase').textContent = nextBase.toLocaleString(undefined, {maximumFractionDigits:2}) + ' $WHATEVER';
+        document.getElementById('yieldSection').style.display    = 'block';
+        document.getElementById('forfeitWarning').style.display  = 'flex';
       } else {
         nftSlot.innerHTML = `
           <div class="no-nft-card">
             <div class="icon">🔒</div>
             <p>No Mining NFT found in this wallet.<br/>You need a Mining NFT to earn staking rewards.</p>
-            ${NFT_COLLECTION === 'MINING_NFT_COLLECTION_ADDRESS_HERE' ? '<p style="margin-top:8px;font-size:11px;color:var(--muted);">NFT collection coming soon.</p>' : ''}
+            ${NFT_COLLECTION === 'MINING_NFT_COLLECTION_ADDRESS_HERE'
+              ? '<p style="margin-top:8px;font-size:11px;color:var(--muted);">NFT collection coming soon.</p>'
+              : ''}
           </div>`;
         document.getElementById('yieldSection').style.display = 'none';
       }
 
       document.getElementById('stakingLoading').style.display = 'none';
       document.getElementById('stakingContent').style.display = 'block';
-
     } catch(e) {
       toast('Error loading staking data.', 'error');
       document.getElementById('stakingLoading').style.display = 'none';
@@ -896,20 +1040,17 @@
     const roiMonthly   = stakingData.nft.roiYearly / 12;
     const monthlyYield = stakingData.balance * (roiMonthly / 100);
     const nextBase     = isOn ? stakingData.balance + monthlyYield : stakingData.balance;
-    document.getElementById('nextMonthBase').textContent = nextBase.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' $WHATEVER';
+    document.getElementById('nextMonthBase').textContent =
+      nextBase.toLocaleString(undefined, {maximumFractionDigits:2}) + ' $WHATEVER';
   }
 
-  /* ── UPDATE BOTTOM NAV STAKING TAB ── */
+  /* ── UPDATE BOTTOM NAV ── */
   function updateStakingNav() {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     const page = document.querySelector('.page.active')?.id;
-    if (page === 'page-staking') {
-      document.getElementById('stakingActiveNavBtn')?.classList.add('active');
-    } else if (page === 'page-captain') {
-      document.getElementById('captainTeamNavBtn')?.classList.add('active');
-    } else if (page === 'page-member') {
-      document.getElementById('memberTeamNavBtn')?.classList.add('active');
-    }
+    if (page === 'page-staking')  document.getElementById('stakingActiveNavBtn')?.classList.add('active');
+    if (page === 'page-captain')  document.getElementById('captainTeamNavBtn')?.classList.add('active');
+    if (page === 'page-member')   document.getElementById('memberTeamNavBtn')?.classList.add('active');
   }
 
   /* ── CREATE TEAM ── */
@@ -921,15 +1062,15 @@
 
     const btn = document.getElementById('createTeamBtn');
     btn.innerHTML = '<span class="spinner"></span>Creating...';
-    btn.disabled = true;
+    btn.disabled  = true;
 
     try {
-      const code = Math.random().toString(36).substring(2,8).toUpperCase();
+      const code     = Math.random().toString(36).substring(2,8).toUpperCase();
       const teamData = { name, captainWallet: walletAddress, captainUsername: username, captainEmail: verifiedEmail, inviteCode: code, createdAt: Date.now() };
       await setDoc(doc(db, 'teams', walletAddress), teamData);
       await setDoc(doc(db, 'members', walletAddress), { wallet: walletAddress, username, role: 'captain', email: verifiedEmail, captainWallet: walletAddress, joinedAt: Date.now() });
       currentTeam = teamData;
-      userRole = 'captain';
+      userRole    = 'captain';
       toast('Team created! 🎉');
       loadCaptainDashboard();
     } catch(e) {
@@ -948,17 +1089,17 @@
 
     const btn = document.getElementById('joinTeamBtn');
     btn.innerHTML = '<span class="spinner"></span>Joining...';
-    btn.disabled = true;
+    btn.disabled  = true;
 
     try {
       const snap = await getDocs(query(collection(db, 'teams'), where('inviteCode', '==', code)));
-      if (snap.empty) { toast('Invalid invite code.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
+      if (snap.empty) { toast('Invalid invite code.', 'error'); return; }
       const teamData = snap.docs[0].data();
       const existing = await getDoc(doc(db, 'members', walletAddress));
-      if (existing.exists()) { toast('You already belong to a team.', 'error'); btn.innerHTML = 'Join Team'; btn.disabled = false; return; }
+      if (existing.exists()) { toast('You already belong to a team.', 'error'); return; }
       await setDoc(doc(db, 'members', walletAddress), { wallet: walletAddress, username, role: 'member', email: verifiedEmail, captainWallet: teamData.captainWallet, joinedAt: Date.now() });
       currentTeam = teamData;
-      userRole = 'member';
+      userRole    = 'member';
       toast(`Joined ${teamData.name}! 🤝`);
       loadMemberDashboard({ wallet: walletAddress, username, role: 'member', captainWallet: teamData.captainWallet });
     } catch(e) {
@@ -973,21 +1114,22 @@
     showPage('page-captain');
     document.getElementById('dashTeamName').textContent = currentTeam.name;
     document.getElementById('displayCode').textContent  = currentTeam.inviteCode;
-    const link = `${location.href.split('?')[0]}?join=${currentTeam.inviteCode}`;
-    document.getElementById('inviteLink').textContent = link;
+    document.getElementById('inviteLink').textContent   = `${location.href.split('?')[0]}?join=${currentTeam.inviteCode}`;
     document.getElementById('stakingNavBtn').style.display = 'block';
 
-    // Captain gate check
-    const balance  = await getWhateverBalance(walletAddress);
+    const balance   = await getWhateverBalance(walletAddress);
     const canInvite = await checkCaptainGate(balance);
     document.getElementById('captainGateWarning').style.display = canInvite ? 'none' : 'block';
 
     if (unsubscribe) unsubscribe();
-    unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', walletAddress)), snap => {
-      const members = snap.docs.map(d => d.data()).filter(m => m.role !== 'captain');
-      document.getElementById('memberCount').textContent = members.length;
-      renderTeammateList('teammateList', members);
-    });
+    unsubscribe = onSnapshot(
+      query(collection(db, 'members'), where('captainWallet', '==', walletAddress)),
+      snap => {
+        const members = snap.docs.map(d => d.data()).filter(m => m.role !== 'captain');
+        document.getElementById('memberCount').textContent = members.length;
+        renderTeammateList('teammateList', members);
+      }
+    );
   }
 
   /* ── MEMBER DASHBOARD ── */
@@ -1000,16 +1142,22 @@
     document.getElementById('stakingNavBtn').style.display = 'block';
 
     if (unsubscribe) unsubscribe();
-    unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', currentTeam.captainWallet)), snap => {
-      const others = snap.docs.map(d => d.data()).filter(m => m.wallet !== walletAddress && m.role !== 'captain');
-      renderTeammateList('memberTeammateList', others);
-    });
+    unsubscribe = onSnapshot(
+      query(collection(db, 'members'), where('captainWallet', '==', currentTeam.captainWallet)),
+      snap => {
+        const others = snap.docs.map(d => d.data()).filter(m => m.wallet !== walletAddress && m.role !== 'captain');
+        renderTeammateList('memberTeammateList', others);
+      }
+    );
   }
 
   /* ── RENDER TEAMMATES ── */
   function renderTeammateList(containerId, members) {
     const el = document.getElementById(containerId);
-    if (!members.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teammates yet.</div>'; return; }
+    if (!members.length) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teammates yet.</div>';
+      return;
+    }
     el.innerHTML = members.map(m => `
       <div class="teammate-item">
         <div class="avatar">${m.username[0].toUpperCase()}</div>
@@ -1025,7 +1173,9 @@
   function copyCode() { navigator.clipboard.writeText(currentTeam?.inviteCode || ''); toast('Invite code copied!'); }
   function copyLink() { navigator.clipboard.writeText(`${location.href.split('?')[0]}?join=${currentTeam?.inviteCode}`); toast('Invite link copied!'); }
 
-  /* ── WIRE ALL BUTTONS ── */
+  /* ════════════════════════════════════════
+     WIRE ALL BUTTONS
+  ════════════════════════════════════════ */
   document.getElementById('getStartedBtn').addEventListener('click', () => showPage('page-email'));
   document.getElementById('emailBackBtn').addEventListener('click', () => showPage('page-home'));
   document.getElementById('toggleAuthModeBtn').addEventListener('click', toggleAuthMode);
@@ -1033,7 +1183,21 @@
   document.getElementById('checkVerifiedBtn').addEventListener('click', checkEmailVerified);
   document.getElementById('resendVerifyBtn').addEventListener('click', resendVerification);
   document.getElementById('backToEmailBtn').addEventListener('click', () => showPage('page-email'));
-  document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
+
+  // FIX: openWalletModalBtn now correctly opens the wallet selection modal
+  document.getElementById('openWalletModalBtn').addEventListener('click', openWalletModal);
+
+  // FIX: close modal on ✕ button and overlay background tap
+  document.getElementById('closeWalletModal').addEventListener('click', closeWalletModal);
+  document.getElementById('walletModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('walletModal')) closeWalletModal();
+  });
+
+  // Header wallet button re-opens modal if not yet connected
+  document.getElementById('walletBtn').addEventListener('click', () => {
+    if (!walletAddress) openWalletModal();
+  });
+
   document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
   document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
   document.getElementById('captainBackBtn').addEventListener('click', () => showPage('page-choose'));
@@ -1045,13 +1209,13 @@
   document.getElementById('stakingNavBtn').addEventListener('click', loadStakingPage);
   document.getElementById('compoundToggle').addEventListener('change', handleCompoundToggle);
 
-  // Bottom nav buttons
+  // Bottom nav
   document.getElementById('captainTeamNavBtn').addEventListener('click', () => { showPage('page-captain'); updateStakingNav(); });
   document.getElementById('captainStakingNavBtn').addEventListener('click', loadStakingPage);
   document.getElementById('memberTeamNavBtn').addEventListener('click', () => { showPage('page-member'); updateStakingNav(); });
   document.getElementById('memberStakingNavBtn').addEventListener('click', loadStakingPage);
   document.getElementById('stakingTeamNavBtn').addEventListener('click', () => {
-    if (userRole === 'captain') { showPage('page-captain'); } else { showPage('page-member'); }
+    showPage(userRole === 'captain' ? 'page-captain' : 'page-member');
     updateStakingNav();
   });
 
@@ -1059,22 +1223,24 @@
   const urlCode = new URLSearchParams(location.search).get('join');
   if (urlCode) document.getElementById('inviteInput').value = urlCode.toUpperCase();
 
-  /* ── AUTO RECONNECT ── */
+  /* ── AUTO RECONNECT — iterate array correctly ── */
   (async () => {
-    const provider = getProvider();
-    if (provider) {
-      try {
-        const res = await provider.connect({ onlyIfTrusted: true });
-        walletAddress = res.publicKey.toString();
-        const btn = document.getElementById('walletBtn');
-        btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
-        btn.classList.add('connected');
-        btn.style.display = 'block';
-        await checkExistingUser();
-      } catch(_) { /* not trusted yet, fine */ }
+    for (const wallet of WALLETS) {           // FIX: was Object.entries(WALLETS) — wrong for arrays
+      const provider = wallet.getProvider();
+      if (provider) {
+        try {
+          const res = await provider.connect({ onlyIfTrusted: true });
+          walletAddress = res.publicKey.toString();
+          const btn = document.getElementById('walletBtn');
+          btn.textContent = walletAddress.slice(0,4) + '...' + walletAddress.slice(-4);
+          btn.classList.add('connected');
+          btn.style.display = 'block';
+          await checkExistingUser();
+          break;
+        } catch(_) { /* not trusted — skip */ }
+      }
     }
   })();
-
 </script>
 </body>
 </html>
