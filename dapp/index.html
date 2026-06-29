@@ -1030,6 +1030,9 @@
   document.getElementById('emailBackBtn').addEventListener('click', () => showPage('page-home'));
   document.getElementById('toggleAuthModeBtn').addEventListener('click', toggleAuthMode);
   document.getElementById('emailAuthBtn').addEventListener('click', handleEmailAuth);
+  document.getElementById('checkVerifiedBtn').addEventListener('click', checkEmailVerified);
+  document.getElementById('resendVerifyBtn').addEventListener('click', resendVerification);
+  document.getElementById('backToEmailBtn').addEventListener('click', () => showPage('page-email'));
   document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
   document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
   document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
