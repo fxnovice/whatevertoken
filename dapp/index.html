@@ -664,6 +664,7 @@
           return;
         }
         verifiedEmail = result.user.email;
+        sessionStorage.setItem('verifiedEmailSession', verifiedEmail);
         toast('Logged in! ✓');
         showPage('page-connect-wallet');
         document.getElementById('walletBtn').style.display = 'block';
@@ -691,6 +692,7 @@
       await user.reload();
       if (user.emailVerified) {
         verifiedEmail = user.email;
+        sessionStorage.setItem('verifiedEmailSession', verifiedEmail);
         toast('Email verified! ✓');
         showPage('page-connect-wallet');
         document.getElementById('walletBtn').style.display = 'block';
@@ -1267,9 +1269,16 @@
   const urlCode = new URLSearchParams(location.search).get('join');
   if (urlCode) document.getElementById('inviteInput').value = urlCode.toUpperCase();
 
-  /* ── AUTO RECONNECT — try all wallets ── */
+  /* ── AUTO RECONNECT — only if this browser already verified email this session ── */
   (async () => {
-    for (const [key, wallet] of Object.entries(WALLETS)) {
+    // Do NOT auto-connect wallet unless the user already verified their email
+    // in this browser session. Otherwise this skips signup/verification entirely.
+    const savedEmail = sessionStorage.getItem('verifiedEmailSession');
+    if (!savedEmail) return; // force user through email flow first
+
+    verifiedEmail = savedEmail;
+
+    for (const wallet of WALLETS) {
       const provider = wallet.getProvider();
       if (provider) {
         try {
@@ -1280,7 +1289,7 @@
           btn.classList.add('connected');
           btn.style.display = 'block';
           await checkExistingUser();
-          break; // stop after first successful reconnect
+          break;
         } catch(_) { /* not trusted yet */ }
       }
     }
