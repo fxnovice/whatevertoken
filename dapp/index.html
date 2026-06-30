@@ -1237,13 +1237,11 @@
   document.getElementById('checkVerifiedBtn').addEventListener('click', checkEmailVerified);
   document.getElementById('resendVerifyBtn').addEventListener('click', resendVerification);
   document.getElementById('backToEmailBtn').addEventListener('click', () => showPage('page-email'));
-  document.getElementById('connectWalletBtn')?.addEventListener('click', () => connectWallet('phantom'));
-  document.getElementById('wallet-phantom')?.addEventListener('click',  () => connectWallet('phantom'));
-  document.getElementById('wallet-solflare')?.addEventListener('click', () => connectWallet('solflare'));
-  document.getElementById('wallet-backpack')?.addEventListener('click', () => connectWallet('backpack'));
-  document.getElementById('wallet-trust')?.addEventListener('click',    () => connectWallet('trust'));
-  document.getElementById('wallet-coinbase')?.addEventListener('click', () => connectWallet('coinbase'));
-  document.getElementById('wallet-metamask')?.addEventListener('click', () => connectWallet('metamask'));
+  document.getElementById('openWalletModalBtn')?.addEventListener('click', openWalletModal);
+  document.getElementById('closeWalletModal')?.addEventListener('click', closeWalletModal);
+  document.getElementById('walletModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'walletModal') closeWalletModal();
+  });
   document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
   document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
   document.getElementById('captainBackBtn').addEventListener('click', () => showPage('page-choose'));
