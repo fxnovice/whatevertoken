@@ -900,6 +900,13 @@
     document.getElementById('walletModal').classList.remove('open');
   }
 
+  // Wire wallet modal buttons here — after functions are defined
+  document.getElementById('openWalletModalBtn').addEventListener('click', openWalletModal);
+  document.getElementById('closeWalletModal').addEventListener('click', closeWalletModal);
+  document.getElementById('walletModal').addEventListener('click', (e) => {
+    if (e.target.id === 'walletModal') closeWalletModal();
+  });
+
   /* ── CONNECT SPECIFIC WALLET ── */
   async function connectWallet(walletKey) {
     const walletDef = WALLETS.find(w => w.key === walletKey);
@@ -1309,11 +1316,6 @@
   document.getElementById('checkVerifiedBtn').addEventListener('click', checkEmailVerified);
   document.getElementById('resendVerifyBtn').addEventListener('click', resendVerification);
   document.getElementById('backToEmailBtn').addEventListener('click', () => showPage('page-email'));
-  document.getElementById('openWalletModalBtn')?.addEventListener('click', openWalletModal);
-  document.getElementById('closeWalletModal')?.addEventListener('click', closeWalletModal);
-  document.getElementById('walletModal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'walletModal') closeWalletModal();
-  });
   document.getElementById('becomeCaptainCard').addEventListener('click', () => showPage('page-register-captain'));
   document.getElementById('joinTeamCard').addEventListener('click', () => showPage('page-join'));
   document.getElementById('captainBackBtn').addEventListener('click', () => showPage('page-choose'));
