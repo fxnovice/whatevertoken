@@ -52,9 +52,10 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0a14; --surface: #12121f; --border: #20203a;
-      --accent: #4f6df5; --accent2: #8b7cf6; --green: #22c55e;
-      --red: #ef4444; --yellow: #f59e0b; --text: #e4e7f5; --muted: #6b7099; --card: #0e0e1c;
+      --bg: #080c08; --surface: #0f150f; --border: #1a2e1a;
+      --accent: #39e55a; --accent2: #84f59a; --green: #39e55a;
+      --red: #ef4444; --yellow: #f59e0b; --text: #e4f5e6; --muted: #6b8f6b; --card: #0a100a;
+      --lime: #c8ff00; --lime-dim: rgba(200,255,0,.15);
     }
     body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
@@ -68,16 +69,16 @@
     .logo span { color: var(--muted); }
     .header-right { display: flex; align-items: center; gap: 10px; }
     #stakingNavBtn {
-      display: none; background: rgba(139,124,246,.15); color: var(--accent2);
-      border: 1px solid rgba(139,124,246,.3); border-radius: 8px;
+      display: none; background: rgba(57,229,90,.12); color: var(--accent2);
+      border: 1px solid rgba(57,229,90,.3); border-radius: 8px;
       padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
     }
     #walletBtn {
-      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      background: var(--accent); color: #080c08; border: none; border-radius: 8px;
       padding: 9px 16px; font-family: 'Space Grotesk', sans-serif; font-size: 13px;
       font-weight: 600; cursor: pointer; transition: background .2s;
     }
-    #walletBtn:hover { background: #3d56d6; }
+    #walletBtn:hover { background: #2bc447; }
     #walletBtn.connected { background: transparent; border: 1px solid var(--border); color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 11px; }
 
     .page { display: none; padding: 24px 20px; max-width: 480px; margin: 0 auto; }
@@ -87,15 +88,15 @@
 
     .hero-tag { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; border: 1px solid rgba(79,109,245,.3); padding: 4px 12px; border-radius: 20px; background: rgba(79,109,245,.08); }
     h1 { font-size: clamp(28px, 8vw, 44px); font-weight: 700; line-height: 1.1; margin-bottom: 16px; letter-spacing: -1px; }
-    h1 .grad { background: linear-gradient(135deg, #4f6df5, #8b7cf6, #b794f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h1 .grad { background: linear-gradient(135deg, #c8ff00, #39e55a, #84f59a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .hero-sub { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 340px; margin-bottom: 36px; }
     .hero-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; }
 
-    .btn-primary { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; width: 100%; }
-    .btn-primary:hover { background: #3d56d6; }
+    .btn-primary { background: var(--accent); color: #080c08; border: none; border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; width: 100%; }
+    .btn-primary:hover { background: #2bc447; }
     .btn-primary:active { transform: scale(.98); }
     .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-    .btn-secondary { background: transparent; color: var(--accent2); border: 1px solid rgba(139,124,246,.4); border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: border-color .2s, background .2s; }
+    .btn-secondary { background: transparent; color: var(--accent2); border: 1px solid rgba(57,229,90,.4); border-radius: 10px; padding: 14px 20px; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: border-color .2s, background .2s; }
     .btn-secondary:hover { border-color: var(--accent2); background: rgba(139,124,246,.08); }
     .btn-ghost { background: transparent; color: var(--muted); border: none; font-family: 'Space Grotesk', sans-serif; font-size: 14px; cursor: pointer; padding: 8px 0; text-decoration: underline; text-underline-offset: 3px; }
     .btn-ghost:hover { color: var(--text); }
@@ -116,23 +117,23 @@
     .step-indicator { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
     .step { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
     .step.done { background: var(--green); color: #fff; }
-    .step.active { background: var(--accent); color: #fff; }
+    .step.active { background: var(--accent); color: #080c08; }
     .step.pending { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
     .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
     .step-line.done { background: var(--green); }
 
-    .invite-box { background: rgba(79,109,245,.1); border: 1px solid rgba(79,109,245,.3); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .invite-box { background: rgba(57,229,90,.08); border: 1px solid rgba(57,229,90,.25); border-radius: 10px; padding: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
     .invite-code { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--accent2); flex: 1; letter-spacing: 3px; }
-    .copy-btn { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+    .copy-btn { background: var(--accent); color: #080c08; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
 
     .teammate-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
     .teammate-item:last-child { border-bottom: none; }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--lime)); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .teammate-info { flex: 1; min-width: 0; }
     .teammate-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .teammate-wallet { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
     .role-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
-    .role-captain { background: rgba(139,124,246,.2); color: var(--accent2); }
+    .role-captain { background: rgba(200,255,0,.12); color: var(--lime); }
     .role-member { background: rgba(34,197,94,.15); color: var(--green); }
 
     .stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
@@ -146,7 +147,7 @@
 
     .link-row { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
     .link-text { flex: 1; padding: 10px 12px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .link-copy { background: var(--accent); color: #fff; border: none; padding: 10px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+    .link-copy { background: var(--accent); color: #080c08; border: none; padding: 10px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
 
     .verified-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--green); font-weight: 600; margin-bottom: 20px; }
 
@@ -195,22 +196,22 @@
 
     /* ── STAKING STYLES ── */
     .staking-hero {
-      background: linear-gradient(135deg, rgba(79,109,245,.15), rgba(139,124,246,.15));
-      border: 1px solid rgba(139,124,246,.25); border-radius: 16px;
+      background: linear-gradient(135deg, rgba(57,229,90,.08), rgba(200,255,0,.08));
+      border: 1px solid rgba(57,229,90,.2); border-radius: 16px;
       padding: 20px; margin-bottom: 20px; text-align: center;
     }
-    .staking-balance { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4f6df5, #8b7cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .staking-balance { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #c8ff00, #39e55a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .staking-balance-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
     .nft-card {
-      background: linear-gradient(135deg, rgba(79,109,245,.1), rgba(139,124,246,.1));
-      border: 1px solid rgba(139,124,246,.3); border-radius: 12px; padding: 16px;
+      background: linear-gradient(135deg, rgba(57,229,90,.06), rgba(200,255,0,.06));
+      border: 1px solid rgba(57,229,90,.25); border-radius: 12px; padding: 16px;
       display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
     }
     .nft-icon { font-size: 36px; flex-shrink: 0; }
     .nft-info { flex: 1; }
     .nft-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-    .nft-roi { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--accent2); }
+    .nft-roi { font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700; color: var(--lime); }
     .nft-roi-label { font-size: 11px; color: var(--muted); }
 
     .no-nft-card {
@@ -225,7 +226,7 @@
     .yield-row:last-child { border-bottom: none; }
     .yield-label { font-size: 13px; color: var(--muted); }
     .yield-value { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text); }
-    .yield-value.highlight { color: var(--green); }
+    .yield-value.highlight { color: var(--lime); }
 
     .forfeit-warning {
       background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.3);
@@ -252,7 +253,49 @@
     .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
 
     .loading-state { text-align: center; padding: 40px 20px; color: var(--muted); }
-    .loading-state .spinner { border-top-color: var(--accent2); border-color: rgba(139,124,246,.3); width: 24px; height: 24px; margin: 0 auto 12px; display: block; }
+    .loading-state .spinner { border-top-color: var(--accent); border-color: rgba(57,229,90,.2); width: 24px; height: 24px; margin: 0 auto 12px; display: block; }
+
+    /* LEADERBOARD */
+    .leaderboard-item {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+      transition: border-color .2s;
+    }
+    .leaderboard-item:hover { border-color: var(--accent); }
+    .leaderboard-item.top3 { border-color: rgba(200,255,0,.3); background: rgba(200,255,0,.04); }
+    .rank-num {
+      font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700;
+      width: 36px; text-align: center; flex-shrink: 0;
+    }
+    .rank-1 { color: #FFD700; }
+    .rank-2 { color: #C0C0C0; }
+    .rank-3 { color: #CD7F32; }
+    .rank-other { color: var(--muted); font-size: 13px; }
+    .leaderboard-info { flex: 1; min-width: 0; }
+    .leaderboard-team { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .leaderboard-captain { font-size: 12px; color: var(--muted); }
+    .leaderboard-members { font-size: 11px; color: var(--muted); }
+    .leaderboard-total {
+      font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700;
+      color: var(--lime); text-align: right; white-space: nowrap;
+    }
+    .leaderboard-total span { display: block; font-size: 10px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+
+    /* TEAM TOKEN BALANCES */
+    .member-balance-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 0; font-size: 12px;
+    }
+    .member-balance-name { color: var(--muted); }
+    .member-balance-amount { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--lime); }
+    .team-total-bar {
+      background: rgba(200,255,0,.08); border: 1px solid rgba(200,255,0,.2);
+      border-radius: 10px; padding: 12px 16px; margin-top: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .team-total-label { font-size: 12px; font-weight: 700; color: var(--lime); }
+    .team-total-amount { font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; color: var(--lime); }
 
     /* BOTTOM NAV for dashboards */
     .bottom-nav { display: flex; gap: 0; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,20,.95); backdrop-filter: blur(12px); z-index: 99; }
@@ -282,7 +325,8 @@
   <header>
     <div class="logo">Whatever<span>Coin</span>Dapp</div>
     <div class="header-right">
-      <button id="stakingNavBtn">⚡ Staking</button>
+      <button id="leaderboardNavBtn" style="display:none;background:rgba(200,255,0,.12);color:var(--lime);border:1px solid rgba(200,255,0,.3);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;">🏆 Leaderboard</button>
+      <button id="stakingNavBtn">⚡ Staking & Rewards</button>
       <button id="walletBtn" style="display:none;">Connect Wallet</button>
     </div>
   </header>
@@ -445,10 +489,15 @@
       <button class="link-copy" id="copyLinkBtn">Copy Link</button>
     </div>
     <div class="section-label">Squad</div>
+    <div class="team-total-bar" id="teamTotalBar" style="display:none;">
+      <div class="team-total-label">💰 Team Total Holdings</div>
+      <div class="team-total-amount" id="teamTotalAmount">—</div>
+    </div>
     <div id="teammateList"><div class="empty"><div class="empty-icon">👥</div>No teammates yet. Share your invite code!</div></div>
     <div class="bottom-nav">
       <button class="nav-btn active" id="captainTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
       <button class="nav-btn" id="captainStakingNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+      <button class="nav-btn" id="captainLeaderNavBtn"><span class="nav-icon">🏆</span>Ranks</button>
     </div>
   </div>
 
@@ -474,6 +523,7 @@
     <div class="bottom-nav">
       <button class="nav-btn active" id="memberTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
       <button class="nav-btn" id="memberStakingNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+      <button class="nav-btn" id="memberLeaderNavBtn"><span class="nav-icon">🏆</span>Ranks</button>
     </div>
   </div>
 
@@ -564,6 +614,28 @@
     <div class="bottom-nav">
       <button class="nav-btn" id="stakingTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
       <button class="nav-btn active" id="stakingActiveNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+      <button class="nav-btn" id="stakingLeaderNavBtn"><span class="nav-icon">🏆</span>Ranks</button>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD PAGE -->
+  <div id="page-leaderboard" class="page has-nav">
+    <div class="page-header">
+      <h2>🏆 Team Leaderboard</h2>
+      <p>Top 100 teams ranked by total $WHATEVER holdings.</p>
+    </div>
+
+    <div id="leaderboardContent">
+      <div class="loading-state">
+        <span class="spinner" style="border-top-color:var(--lime);border-color:rgba(57,229,90,.2);width:24px;height:24px;display:inline-block;margin-bottom:12px;"></span>
+        <div>Loading leaderboard...</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn" id="leaderTeamNavBtn"><span class="nav-icon">👥</span>Team</button>
+      <button class="nav-btn" id="leaderStakingNavBtn"><span class="nav-icon">⚡</span>Staking</button>
+      <button class="nav-btn active" id="leaderActiveNavBtn"><span class="nav-icon">🏆</span>Ranks</button>
     </div>
   </div>
 
@@ -1190,7 +1262,7 @@
     unsubscribe = onSnapshot(query(collection(db, 'members'), where('captainWallet', '==', walletAddress)), snap => {
       const members = snap.docs.map(d => d.data()).filter(m => m.role !== 'captain');
       document.getElementById('memberCount').textContent = members.length;
-      renderTeammateList('teammateList', members);
+      renderTeammateListWithBalances('teammateList', members);
     });
   }
 
@@ -1254,16 +1326,161 @@
   document.getElementById('compoundToggle').addEventListener('change', handleCompoundToggle);
 
   // Bottom nav buttons
-  document.getElementById('captainTeamNavBtn').addEventListener('click', () => { showPage('page-captain'); updateStakingNav(); });
+  document.getElementById('captainTeamNavBtn').addEventListener('click', () => { showPage('page-captain'); updateNav(); });
   document.getElementById('captainStakingNavBtn').addEventListener('click', loadStakingPage);
-  document.getElementById('memberTeamNavBtn').addEventListener('click', () => { showPage('page-member'); updateStakingNav(); });
+  document.getElementById('captainLeaderNavBtn').addEventListener('click', loadLeaderboard);
+  document.getElementById('memberTeamNavBtn').addEventListener('click', () => { showPage('page-member'); updateNav(); });
   document.getElementById('memberStakingNavBtn').addEventListener('click', loadStakingPage);
+  document.getElementById('memberLeaderNavBtn').addEventListener('click', loadLeaderboard);
   document.getElementById('stakingTeamNavBtn').addEventListener('click', () => {
     if (userRole === 'captain') { showPage('page-captain'); } else { showPage('page-member'); }
-    updateStakingNav();
+    updateNav();
   });
+  document.getElementById('stakingLeaderNavBtn').addEventListener('click', loadLeaderboard);
+  document.getElementById('leaderTeamNavBtn').addEventListener('click', () => {
+    if (userRole === 'captain') { showPage('page-captain'); } else { showPage('page-member'); }
+    updateNav();
+  });
+  document.getElementById('leaderStakingNavBtn').addEventListener('click', loadStakingPage);
+  document.getElementById('leaderboardNavBtn').addEventListener('click', loadLeaderboard);
 
-  /* ── AUTO JOIN FROM URL ── */
+  /* ── UPDATE NAV ── */
+  function updateNav() {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const page = document.querySelector('.page.active')?.id;
+    if (page === 'page-staking')     { document.getElementById('stakingActiveNavBtn')?.classList.add('active'); }
+    else if (page === 'page-captain') { document.getElementById('captainTeamNavBtn')?.classList.add('active'); }
+    else if (page === 'page-member')  { document.getElementById('memberTeamNavBtn')?.classList.add('active'); }
+    else if (page === 'page-leaderboard') {
+      document.getElementById('leaderActiveNavBtn')?.classList.add('active');
+      document.getElementById('captainLeaderNavBtn')?.classList.add('active');
+      document.getElementById('memberLeaderNavBtn')?.classList.add('active');
+    }
+  }
+
+  /* ── LEADERBOARD ── */
+  async function loadLeaderboard() {
+    showPage('page-leaderboard');
+    updateNav();
+    document.getElementById('leaderboardNavBtn').style.display = 'block';
+
+    const el = document.getElementById('leaderboardContent');
+    el.innerHTML = `<div class="loading-state"><span class="spinner" style="border-top-color:var(--lime);border-color:rgba(57,229,90,.2);width:24px;height:24px;display:inline-block;margin-bottom:12px;"></span><div>Fetching team balances...</div></div>`;
+
+    try {
+      const teamsSnap   = await getDocs(collection(db, 'teams'));
+      const membersSnap = await getDocs(collection(db, 'members'));
+      const teams   = teamsSnap.docs.map(d => d.data());
+      const members = membersSnap.docs.map(d => d.data());
+
+      // For each team, get all member balances
+      const teamRankings = [];
+      for (const team of teams) {
+        const teamMembers = members.filter(m => m.captainWallet === team.captainWallet);
+        let teamTotal = 0;
+        const memberBalances = [];
+
+        for (const member of teamMembers) {
+          const bal = await getWhateverBalance(member.wallet);
+          teamTotal += bal;
+          memberBalances.push({ username: member.username, wallet: member.wallet, role: member.role, balance: bal });
+        }
+
+        teamRankings.push({
+          name: team.name,
+          captainUsername: team.captainUsername,
+          captainWallet: team.captainWallet,
+          memberCount: teamMembers.length,
+          total: teamTotal,
+          members: memberBalances
+        });
+      }
+
+      // Sort by total holdings descending
+      teamRankings.sort((a, b) => b.total - a.total);
+
+      // Render top 100
+      const top100 = teamRankings.slice(0, 100);
+      if (!top100.length) {
+        el.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>No teams registered yet.</div>';
+        return;
+      }
+
+      el.innerHTML = top100.map((team, i) => {
+        const rank = i + 1;
+        const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
+        const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+        return `
+          <div class="leaderboard-item ${rank <= 3 ? 'top3' : ''}">
+            <div class="rank-num ${rankClass}">${rankEmoji}</div>
+            <div class="leaderboard-info">
+              <div class="leaderboard-team">${team.name}</div>
+              <div class="leaderboard-captain">👑 ${team.captainUsername} · ${team.captainWallet.slice(0,6)}...${team.captainWallet.slice(-4)}</div>
+              <div class="leaderboard-members">${team.memberCount} member${team.memberCount !== 1 ? 's' : ''}</div>
+            </div>
+            <div class="leaderboard-total">
+              ${formatTokenAmount(team.total)}
+              <span>$WHATEVER</span>
+            </div>
+          </div>`;
+      }).join('');
+
+    } catch(e) {
+      el.innerHTML = `<div class="empty"><div class="empty-icon">❌</div>Error loading leaderboard: ${e.message}</div>`;
+    }
+  }
+
+  function formatTokenAmount(n) {
+    if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(2) + 'B';
+    if (n >= 1_000_000)     return (n / 1_000_000).toFixed(2) + 'M';
+    if (n >= 1_000)         return (n / 1_000).toFixed(2) + 'K';
+    return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  }
+
+  /* ── MEMBER TOKEN BALANCES ON DASHBOARDS ── */
+  async function renderTeammateListWithBalances(containerId, members) {
+    const el = document.getElementById(containerId);
+    if (!members.length) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div>No teammates yet.</div>';
+      return;
+    }
+
+    // Render immediately with loading state for balances
+    el.innerHTML = members.map(m => `
+      <div class="teammate-item">
+        <div class="avatar">${m.username[0].toUpperCase()}</div>
+        <div class="teammate-info">
+          <div class="teammate-name">${m.username}</div>
+          <div class="teammate-wallet">${m.wallet.slice(0,6)}...${m.wallet.slice(-4)}</div>
+          <div class="member-balance-amount" id="tbal-${m.wallet}" style="margin-top:3px;">Loading...</div>
+        </div>
+        <div class="role-badge role-member">Member</div>
+      </div>
+    `).join('');
+
+    // Fetch balances in background
+    let teamTotal = 0;
+    for (const m of members) {
+      const bal = await getWhateverBalance(m.wallet);
+      teamTotal += bal;
+      const balEl = document.getElementById(`tbal-${m.wallet}`);
+      if (balEl) balEl.textContent = formatTokenAmount(bal) + ' $WHATEVER';
+    }
+
+    // Add captain balance too if on captain dashboard
+    if (walletAddress && containerId === 'teammateList') {
+      const captainBal = await getWhateverBalance(walletAddress);
+      teamTotal += captainBal;
+      // Show team total
+      const totalEl = document.getElementById('teamTotalBar');
+      if (totalEl) {
+        totalEl.style.display = 'flex';
+        document.getElementById('teamTotalAmount').textContent = formatTokenAmount(teamTotal) + ' $WHATEVER';
+      }
+    }
+  }
+
+
   const urlCode = new URLSearchParams(location.search).get('join');
   if (urlCode) document.getElementById('inviteInput').value = urlCode.toUpperCase();
 
