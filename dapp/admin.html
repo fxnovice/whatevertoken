@@ -73,7 +73,7 @@
     .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
     /* SECTION */
-    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
     .section-title { font-size: 16px; font-weight: 700; }
     .section-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
@@ -87,12 +87,24 @@
     .search-bar:focus { border-color: var(--accent); }
     .search-bar::placeholder { color: var(--muted); }
 
+    /* CONTROLS ROW (search + sort) */
+    .controls-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .controls-row .search-bar { margin-bottom: 0; flex: 1; }
+    .sort-select {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 12px; color: var(--text);
+      font-family: 'Space Grotesk', sans-serif; font-size: 13px; outline: none;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .sort-select:focus { border-color: var(--accent); }
+
     /* TEAM CARD */
     .team-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 14px; margin-bottom: 16px; overflow: hidden;
     }
     .team-card.banned { border-color: rgba(239,68,68,.3); }
+    .team-card.over-limit { border-color: rgba(245,158,11,.35); }
     .team-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 20px; cursor: pointer; gap: 12px;
@@ -101,9 +113,11 @@
     .team-info { flex: 1; min-width: 0; }
     .team-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
     .team-meta { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+    .team-holdings { color: var(--accent2); }
     .team-actions { display: flex; gap: 8px; flex-shrink: 0; }
     .team-members { padding: 0 20px 16px; border-top: 1px solid var(--border); }
     .team-members.hidden { display: none; }
+    .over-limit-badge { background: rgba(245,158,11,.15); color: var(--yellow); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
 
     /* MEMBER ROW */
     .member-row {
@@ -149,6 +163,22 @@
     }
     .block-form input:focus { border-color: var(--red); }
 
+    /* SETTINGS FORM */
+    .settings-form {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 20px;
+    }
+    .settings-form label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+    .settings-form .settings-row { display: flex; gap: 10px; align-items: center; }
+    .settings-form input[type="number"] {
+      width: 120px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--text);
+      font-family: 'Space Mono', monospace; font-size: 14px; outline: none;
+    }
+    .settings-form input[type="number"]:focus { border-color: var(--accent); }
+    .settings-hint { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+    .settings-current { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent2); margin-top: 10px; }
+
     /* TABS */
     .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface); border-radius: 10px; padding: 4px; }
     .tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; color: var(--muted); transition: background .2s, color .2s; border: none; background: transparent; font-family: 'Space Grotesk', sans-serif; }
@@ -182,6 +212,7 @@
       .team-actions { flex-direction: column; gap: 4px; }
       header { padding: 12px 16px; }
       .page { padding: 16px; }
+      .controls-row { flex-direction: column; }
     }
   </style>
 </head>
@@ -231,6 +262,7 @@
   <div class="tabs">
     <button class="tab active" id="tab-teams" onclick="switchTab('teams')">👥 Teams</button>
     <button class="tab" id="tab-blocked" onclick="switchTab('blocked')">🚫 Blocked</button>
+    <button class="tab" id="tab-settings" onclick="switchTab('settings')">⚙️ Settings</button>
   </div>
 
   <!-- TEAMS TAB -->
@@ -242,7 +274,14 @@
       </div>
       <button class="btn btn-primary btn-sm" id="refreshBtn" onclick="loadDashboard()">↻ Refresh</button>
     </div>
-    <input class="search-bar" id="searchBar" placeholder="Search by team name or wallet..." oninput="filterTeams()"/>
+    <div class="controls-row">
+      <input class="search-bar" id="searchBar" placeholder="Search by team name or wallet..." oninput="filterTeams()"/>
+      <select class="sort-select" id="sortSelect" onchange="filterTeams()">
+        <option value="name">Sort: Name (A–Z)</option>
+        <option value="members">Sort: Most Members</option>
+        <option value="holdings">Sort: Highest Holdings</option>
+      </select>
+    </div>
     <div id="teamsList"><div class="empty"><div class="empty-icon">⏳</div>Loading teams...</div></div>
   </div>
 
@@ -262,6 +301,25 @@
       <button class="btn btn-danger" onclick="blockWallet()">🚫 Block Wallet</button>
     </div>
     <div id="blockedList"><div class="empty"><div class="empty-icon">✅</div>No blocked wallets.</div></div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="panel-settings" style="display:none;">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Global Team Settings</div>
+        <div class="section-sub">Applies to every team on the platform</div>
+      </div>
+    </div>
+    <div class="settings-form">
+      <label>Maximum members per team</label>
+      <div class="settings-row">
+        <input type="number" id="maxMembersInput" min="1" step="1" placeholder="e.g. 5" />
+        <button class="btn btn-primary btn-sm" id="saveLimitBtn" onclick="saveMemberLimit()">Save Limit</button>
+      </div>
+      <div class="settings-current" id="currentLimitDisplay">Loading current limit...</div>
+      <div class="settings-hint">This sets the platform-wide cap used when teams register or accept new members. Teams already over the limit are flagged in the Teams tab but are not automatically trimmed — remove members manually if needed.</div>
+    </div>
   </div>
 
 </div>
@@ -290,6 +348,7 @@
   const ADMIN_WALLET   = '8Vs4zQ4ZvpcvCojrvV8zvmWG8mTyZmWM88noMTPD7m4K';
   const WHATEVER_MINT  = 'AJba6TsLSNzpYHRajPBppEWiH8AFp43cxAefwMJ5pump';
   const SOLANA_RPC     = 'https://api.mainnet-beta.solana.com';
+  const DEFAULT_MAX_MEMBERS = 5;
   // ================================================================
 
   const firebaseConfig = {
@@ -305,9 +364,10 @@
   const fbApp = initializeApp(firebaseConfig);
   const db    = getFirestore(fbApp);
 
-  let adminWallet  = null;
-  let allTeamsData = [];
-  let modalAction  = null;
+  let adminWallet     = null;
+  let allTeamsData    = [];
+  let modalAction     = null;
+  let maxMembersLimit = DEFAULT_MAX_MEMBERS;
 
   /* ── TOAST ── */
   function toast(msg, type = 'success') {
@@ -335,9 +395,11 @@
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.add('active');
-    document.getElementById('panel-teams').style.display   = tab === 'teams'   ? 'block' : 'none';
-    document.getElementById('panel-blocked').style.display = tab === 'blocked' ? 'block' : 'none';
+    document.getElementById('panel-teams').style.display    = tab === 'teams'    ? 'block' : 'none';
+    document.getElementById('panel-blocked').style.display  = tab === 'blocked'  ? 'block' : 'none';
+    document.getElementById('panel-settings').style.display = tab === 'settings' ? 'block' : 'none';
     if (tab === 'blocked') loadBlockedList();
+    if (tab === 'settings') loadMemberLimit();
   }
 
   /* ── WALLET CONNECT ── */
@@ -369,6 +431,7 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-admin').classList.add('active');
     loadDashboard();
+    loadMemberLimit();
   }
 
   /* ── SOLANA RPC ── */
@@ -392,6 +455,55 @@
     } catch(e) { return 0; }
   }
 
+  /* ── MEMBER LIMIT (SETTINGS) ── */
+  async function loadMemberLimit() {
+    const display = document.getElementById('currentLimitDisplay');
+    const input   = document.getElementById('maxMembersInput');
+    try {
+      const snap = await getDoc(doc(db, 'settings', 'teamLimits'));
+      maxMembersLimit = snap.exists() && snap.data().maxMembersPerTeam
+        ? snap.data().maxMembersPerTeam
+        : DEFAULT_MAX_MEMBERS;
+      display.textContent = `Current limit: ${maxMembersLimit} members per team`;
+      input.value = maxMembersLimit;
+      flagOverLimitTeams();
+    } catch(e) {
+      display.textContent = 'Error loading current limit.';
+    }
+  }
+
+  window.saveMemberLimit = async function() {
+    const input = document.getElementById('maxMembersInput');
+    const value = parseInt(input.value, 10);
+    if (!value || value < 1) { toast('Enter a valid limit (1 or more).', 'error'); return; }
+    const btn = document.getElementById('saveLimitBtn');
+    btn.innerHTML = '<span class="spinner"></span>Saving...';
+    btn.disabled = true;
+    try {
+      await setDoc(doc(db, 'settings', 'teamLimits'), {
+        maxMembersPerTeam: value,
+        updatedAt: Date.now(),
+        updatedBy: adminWallet
+      });
+      maxMembersLimit = value;
+      document.getElementById('currentLimitDisplay').textContent = `Current limit: ${value} members per team`;
+      toast('Member limit updated.');
+      flagOverLimitTeams();
+      renderTeams(getVisibleTeams());
+    } catch(e) {
+      toast('Error saving limit.', 'error');
+    } finally {
+      btn.innerHTML = 'Save Limit';
+      btn.disabled = false;
+    }
+  }
+
+  function flagOverLimitTeams() {
+    allTeamsData.forEach(team => {
+      team.overLimit = team.members.length > maxMembersLimit;
+    });
+  }
+
   /* ── LOAD DASHBOARD ── */
   window.loadDashboard = async function() {
     const btn = document.getElementById('refreshBtn');
@@ -409,11 +521,17 @@
       const blocked = blockedSnap.docs.map(d => d.id);
 
       // Group members by team
-      allTeamsData = teams.map(team => ({
-        ...team,
-        members: members.filter(m => m.captainWallet === team.captainWallet),
-        isBanned: blocked.includes(team.captainWallet)
-      }));
+      allTeamsData = teams.map(team => {
+        const teamMembers = members.filter(m => m.captainWallet === team.captainWallet);
+        return {
+          ...team,
+          members: teamMembers,
+          isBanned: blocked.includes(team.captainWallet),
+          overLimit: teamMembers.length > maxMembersLimit,
+          totalHoldings: 0,
+          holdingsLoaded: 0
+        };
+      });
 
       // Stats
       document.getElementById('statTeams').textContent   = teams.length;
@@ -421,7 +539,7 @@
       document.getElementById('statBlocked').textContent = blocked.length;
       document.getElementById('statTokens').textContent  = '...';
 
-      renderTeams(allTeamsData);
+      renderTeams(getVisibleTeams());
 
       // Load balances in background
       let totalTokens = 0;
@@ -430,8 +548,11 @@
           const balance = await getWhateverBalance(member.wallet);
           member.balance = balance;
           totalTokens += balance;
+          team.totalHoldings += balance;
+          team.holdingsLoaded += 1;
           document.getElementById('statTokens').textContent = totalTokens.toLocaleString(undefined, {maximumFractionDigits: 0});
           updateMemberBalance(member.wallet, balance);
+          updateTeamHoldings(team);
         }
       }
 
@@ -443,6 +564,31 @@
     }
   }
 
+  /* ── SORTING / FILTERING HELPERS ── */
+  function getVisibleTeams() {
+    const q = (document.getElementById('searchBar')?.value || '').toLowerCase();
+    let filtered = allTeamsData.filter(t =>
+      t.name.toLowerCase().includes(q) ||
+      t.captainWallet.toLowerCase().includes(q) ||
+      t.captainUsername.toLowerCase().includes(q) ||
+      t.members.some(m => m.wallet.toLowerCase().includes(q) || m.username.toLowerCase().includes(q))
+    );
+    return sortTeams(filtered);
+  }
+
+  function sortTeams(teams) {
+    const sortBy = document.getElementById('sortSelect')?.value || 'name';
+    const copy = [...teams];
+    if (sortBy === 'members') {
+      copy.sort((a, b) => b.members.length - a.members.length);
+    } else if (sortBy === 'holdings') {
+      copy.sort((a, b) => b.totalHoldings - a.totalHoldings);
+    } else {
+      copy.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return copy;
+  }
+
   /* ── RENDER TEAMS ── */
   function renderTeams(teams) {
     const el = document.getElementById('teamsList');
@@ -451,15 +597,21 @@
       return;
     }
     el.innerHTML = teams.map(team => `
-      <div class="team-card ${team.isBanned ? 'banned' : ''}" id="team-${team.captainWallet}">
+      <div class="team-card ${team.isBanned ? 'banned' : ''} ${team.overLimit ? 'over-limit' : ''}" id="team-${team.captainWallet}">
         <div class="team-header" onclick="toggleTeam('${team.captainWallet}')">
           <div class="team-info">
             <div class="team-name">
               ${team.name}
               ${team.isBanned ? '<span class="banned-badge">BANNED</span>' : ''}
+              ${team.overLimit ? `<span class="over-limit-badge">OVER LIMIT (${team.members.length}/${maxMembersLimit})</span>` : ''}
             </div>
             <div class="team-meta">
               Captain: ${team.captainUsername} · ${team.captainWallet.slice(0,6)}...${team.captainWallet.slice(-4)} · ${team.members.length} members
+              · <span class="team-holdings" id="holdings-${team.captainWallet}">${
+                team.holdingsLoaded < team.members.length
+                  ? (team.members.length ? 'Holdings loading...' : '0 $WHATEVER')
+                  : team.totalHoldings.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' $WHATEVER total'
+              }</span>
             </div>
           </div>
           <div class="team-actions" onclick="event.stopPropagation()">
@@ -501,6 +653,16 @@
     }
   }
 
+  /* ── UPDATE TEAM HOLDINGS (progressive, in place) ── */
+  function updateTeamHoldings(team) {
+    const el = document.getElementById(`holdings-${team.captainWallet}`);
+    if (!el) return;
+    const done = team.holdingsLoaded >= team.members.length;
+    el.textContent = done
+      ? team.totalHoldings.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' $WHATEVER total'
+      : `Holdings loading... (${team.totalHoldings.toLocaleString(undefined, {maximumFractionDigits: 0})} so far)`;
+  }
+
   /* ── TOGGLE TEAM ── */
   window.toggleTeam = function(captainWallet) {
     const el = document.getElementById(`members-${captainWallet}`);
@@ -509,14 +671,7 @@
 
   /* ── FILTER TEAMS ── */
   window.filterTeams = function() {
-    const q = document.getElementById('searchBar').value.toLowerCase();
-    const filtered = allTeamsData.filter(t =>
-      t.name.toLowerCase().includes(q) ||
-      t.captainWallet.toLowerCase().includes(q) ||
-      t.captainUsername.toLowerCase().includes(q) ||
-      t.members.some(m => m.wallet.toLowerCase().includes(q) || m.username.toLowerCase().includes(q))
-    );
-    renderTeams(filtered);
+    renderTeams(getVisibleTeams());
   }
 
   /* ── DELETE TEAM ── */
